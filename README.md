@@ -1,6 +1,7 @@
 # CRW-assembly-pipeline
 ## we sequenced the clover root weevil( Sitona obsoletus) using the data from 4 flow cell runs with 4 different individual and the data from all 4 runs were combined and basecalled with the guppy 5 version.
-scrpit
+script
+
 `#!/bin/bash -e
 
 #SBATCH --job-name=guppy_crw                 #name of the job
