@@ -1,8 +1,8 @@
 # CRW-assembly-pipeline
 ## we sequenced the clover root weevil( Sitona obsoletus) using the data from 4 flow cell runs with 4 different individual and the data from all 4 runs were combined and basecalled with the guppy 5 version.
 script
-
-`#!/bin/bash -e
+```
+#!/bin/bash -e
 
 #SBATCH --job-name=guppy_crw                 #name of the job
 #SBATCH --account=uoo02772              #my project number in nesi
@@ -18,7 +18,8 @@ script
 #SBATCH --mail-user=katma889@student.otago.ac.nz
 
 module load ont-guppy-gpu/5.0.7
-guppy_basecaller -i ../ -s . --flowcell FLO-MIN106 --kit SQK-LSK109 --num_callers 4 -x auto --recursive --trim_barcodes --disable_qscore_filtering``
+guppy_basecaller -i ../ -s . --flowcell FLO-MIN106 --kit SQK-LSK109 --num_callers 4 -x auto --recursive --trim_barcodes --disable_qscore_filtering
+
 ```
 ##  Along we the merged fastqc files from guppy we also got the sequencing summary.txt file which we process further with pycoQC-2.5.2 which hives the html file in output makes the viewing data for quality easier.
 Script for pycoqc
