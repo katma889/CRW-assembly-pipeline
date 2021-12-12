@@ -115,8 +115,8 @@ Script
 #SBATCH --mail-user=katma889@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
-module load Flye/2.8.3-gimkl-2020a-Python-3.8.2
+module load Flye/2.7.1-gimkl-2020a-Python-2.7.18
 
-flye --nano-raw crw_ont_nanolyse_porechop.fastq.gz -o ./CRW.flye.v3 -t 10 -i 3
+flye --nano-raw crw_ont_nanolyse_porechop.fastq.gz -o ./CRW.flye.v2 -t 10 -i 3
 ```
 
