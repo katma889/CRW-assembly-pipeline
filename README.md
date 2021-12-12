@@ -148,4 +148,39 @@ assembly.fasta \
 ```
 ## By running the above script it yielded a Quast folder wwhich yielded a main file called report.txt.
 The above mentioned report.txt yielded us  the Complete BUSCO percent of 91.42 and partial BUSCO percent of 5.61 with the number of contigs equals to 82815.
+## Then we used Purgehaplotigs to remove the haplotigs from our assembly. It helps us to to identify and reassign the duplicate contigs to improve our assembly. The script that we ran is given below;
+Script
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name purgehap.crw
+#SBATCH --mem=80G
+#SBATCH --time=24:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load SAMtools/1.12-GCC-9.2.0
+module load minimap2/2.20-GCC-9.2.0
+module load BEDTools/2.29.2-GCC-9.2.0
+
+#minimap2 -t 10 -ax map-ont assembly.fasta crw_ont_nanolyse_porechop_nanofilt.fastq.gz \
+#--secondary=no | samtools sort -m 5G -o aligned.bam -T tmp.ali
+
+export PATH="/nesi/nobackup/uoo02772/bin/miniconda3/bin:$PATH"
+#purge_haplotigs hist -b aligned.bam -g assembly.fasta -t 10
+
+#purge_haplotigs cov -i aligned.bam.gencov -l 0 -m 20 -h 199 -o coverage_stats.csv
+
+purge_haplotigs purge -g assembly.fasta -c coverage_stats.csv -b aligned.bam
+
+#awk '{print $1",s,"}' gapclosed.fasta.pilon3.fasta.fai > cov_stat.csv
+#purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
+```
 
