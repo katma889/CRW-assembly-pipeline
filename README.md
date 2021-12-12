@@ -183,7 +183,7 @@ purge_haplotigs purge -g assembly.fasta -c coverage_stats.csv -b aligned.bam
 #awk '{print $1",s,"}' gapclosed.fasta.pilon3.fasta.fai > cov_stat.csv
 #purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
 ```
-### This yielded us the file called curated.fasta which we further ran quast on it. This purge haplotigs bring down the contigs number to 51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the RagTag algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for RAgTag is fgiven below;
+### This yielded us the file called curated.fasta which we further ran quast on it. This purge haplotigs bring down the contigs number to 51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the RagTag algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for RAgTag is given below;
 Script
 ```
 #!/bin/bash -e
@@ -210,5 +210,52 @@ By running above script we got ragtag.scaffold.fasta as our main output and we c
 placed_sequences        placed_bp	unplaced_sequences	unplaced_bp     gap_bp  gap_sequences
 15186   629971398	36204   511046512	377200  3772
 ```
+## We further ran quast in the output file from ragtag that is ragtag.scaffold.fasta and it further reduced to number of contigs to 47618 with the complete BUSCO percent and partial BUSCO percent to 90.10 and 5.94 respectively.
+## Then we used lrscaff to further scaffold the assembly from ragtag using long reads that is crw_ont_nanolyse_porechop_nanofilt.fasta in our case. The script for lrscaff is given below;
+Script
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name lrscaf.crw
+#SBATCH --mem=80G
+#SBATCH --time=72:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load minimap2
+
+minimap2 -t 10 ragtag.scaffold.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./aln.mm
+export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
+
+java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ragtag.scaffold.fasta --alignedFile aln.mm -t mm -p 10 --output ./scaffolds1
+
+minimap2 -t 10 ./scaffolds1/scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./scaffolds1/aln.mm
+export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
+
+java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ./scaffolds1/scaffolds.fasta --alignedFile ./scaffolds1/aln.mm -t mm -p 10 --output ./scaffolds1/scaffolds2
+
+minimap2 -t 10 ./scaffolds1/scaffolds2/scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./scaffolds1/scaffolds2/aln.mm
+export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
+
+java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ./scaffolds1/scaffolds2/scaffolds.fasta --alignedFile ./scaffolds1/scaffolds2/aln.mm -t mm -p 10 --output ./scaffolds1/scaffolds2/scaffolds3
+
+minimap2 -t 10 ./scaffolds1/scaffolds2/scaffolds3/scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./scaffolds1/scaffolds2/scaffolds3/aln.mm
+export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
+
+java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ./scaffolds1/scaffolds2/scaffolds3/scaffolds.fasta --alignedFile ./scaffolds1/scaffolds2/scaffolds3/aln.mm -t mm -p 10 --output ./scaffolds1/scaffolds2/scaffolds3/scaffolds4
+
+minimap2 -t 10 ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/aln.mm
+export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
+
+java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds.fasta --alignedFile ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/aln.mm -t mm -p 10 --output ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5
+```
+
 
 
