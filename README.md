@@ -96,4 +96,27 @@ Script
 module load Porechop/0.2.4-gimkl-2020a-Python-3.8.2
 porechop -i ../crw_nanopore_filtered.fastq.gz -o crw_ont_nanolyse_porechop.fastq.gz --threads 10
 ```
+## We used FLye to assemble the long read data from Oxford Minion. The script for flye assembly algorithm is given below;
+Script 
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --partition=hugemem
+#SBATCH --job-name flye.crwV3
+#SBATCH --mem=150G
+#SBATCH --time=72:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load Flye/2.8.3-gimkl-2020a-Python-3.8.2
+
+flye --nano-raw crw_ont_nanolyse_porechop.fastq.gz -o ./CRW.flye.v3 -t 10 -i 3
+```
 
