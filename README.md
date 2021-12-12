@@ -115,8 +115,37 @@ Script
 #SBATCH --mail-user=katma889@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
-module load Flye/2.7.1-gimkl-2020a-Python-2.7.18
+module load Flye/2.9-gimkl-2020a-Python-3.8.2
 
-flye --nano-raw crw_ont_nanolyse_porechop.fastq.gz -o ./CRW.flye.v2 -t 10 -i 3
+flye --nano-hq ../crw_ont_nanolyse_porechop_nanofilt.fastq.gz -o ./Flye -t 10 -i 3 
+
 ```
+This Flye output also includes a main file assembly.fasta which is further used for running the Quast. Quast is usually used to evaluate the assembly quality even without a reference genome. The script of Quast is given below;
+Script
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 6
+#SBATCH --partition=large
+#SBATCH --job-name quast.crw
+#SBATCH --mem=30G
+#SBATCH --time=09:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load QUAST
+#=========> running quast for assembly quality
+
+quast.py -t 10 --eukaryote --large --conserved-genes-finding --k-mer-stats \
+assembly.fasta \
+-o quastqless 
+```
+## By running the above script it yielded a Quast folder wwhich yielded a main file called report.txt.
+The above mentioned report.txt yielded us  the Complete BUSCO percent of 91.42 and partial BUSCO percent of 5.61 with the number of contigs equals to 82815.
 
