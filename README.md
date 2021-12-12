@@ -183,4 +183,32 @@ purge_haplotigs purge -g assembly.fasta -c coverage_stats.csv -b aligned.bam
 #awk '{print $1",s,"}' gapclosed.fasta.pilon3.fasta.fai > cov_stat.csv
 #purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
 ```
+### This yielded us the file called curated.fasta which we further ran quast on it. This purge haplotigs bring down the contigs number to 51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the RagTag algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for RAgTag is fgiven below;
+Script
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name ragtag.crw
+#SBATCH --mem=8G
+#SBATCH --time=04:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
+
+ragtag.py scaffold curated.haplotigs.fasta curated.fasta
+```
+By running above script we got ragtag.scaffold.fasta as our main output and we can check the stats file ( for example ragtag.scaffold.stats) to see  the number of scaffold it removed. Our result is given below;
+```
+placed_sequences        placed_bp	unplaced_sequences	unplaced_bp     gap_bp  gap_sequences
+15186   629971398	36204   511046512	377200  3772
+```
+
 
