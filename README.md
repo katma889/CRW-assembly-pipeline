@@ -258,4 +258,34 @@ java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.1
 ```
 ### we checked the output from the lrscaff from quast and scaffolds5_scaffolds resulted in the reduction in the number of contigs to 26788 with a complete BUSCO percent of 94.72 and partial BUSCO 2.64 percent respectively. 
 
+## we further scaffold our genome usimng long DNA sequences from ONT (crw_ont_nanolyse_porechop_nanofilt.fasta) using RAILS v1.5.1 and Cobbler v0.6.1. Here RAIlS is known as all-in -one scaffolder and gap-filler whereas Cobbler is tool that patch gaps automatically. The script used for this is given below;
+Script
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name rails.cob.crw
+#SBATCH --mem=50G
+#SBATCH --time=72:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+
+module load Perl/5.30.1-GCC-9.2.0
+module load minimap2
+module load SAMtools/1.13-GCC-9.2.0
+export PATH="/nesi/nobackup/uoo02752/nematode/bin/RAILS/bin:$PATH"
+
+sh runRAILSminimapSTREAM.sh scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.fasta 250 0.80 500 2 ont \
+/scale_wlg_persistent/filesets/opt_nesi/CS400_centos7_bdw/SAMtools/1.13-GCC-9.2.0/bin/samtools 10
+
+```
+
+
 
