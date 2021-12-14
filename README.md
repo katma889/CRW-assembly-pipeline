@@ -328,5 +328,33 @@ Complete BUSCO (%)          94.06
 Partial BUSCO (%)           2.97
 
 ```
+## Then we further used the LRScaff to further boost the contiguity of our assemly using ONT long filetered reads.The script for LRScaff is given below;
+script for LRScaff
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 16
+#SBATCH --job-name lr-gapEW
+#SBATCH --mem=40G
+##SBATCH --time=00:15:00
+#SBATCH --time=50:00:00
+#SBATCH --account=uoo02752
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=bhaup057@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load BWA/0.7.17-gimkl-2017a
+export PATH=/nesi/nobackup/uoo02752/bin/LR_Gapcloser/src/:$PATH
+
+sh LR_Gapcloser.sh -i crw.scaffolds.fasta -l crw_ont_nanolyse_porechop_nanofilt.fasta -s n -t 16 -r 10
+
+```
+Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) to 3002.56 from 8276.39   using crw_ont_nanolyse_porechop_nanofilt.fasta for gap filling and increased the partial BUSCO to 3.30 from 2.97 while complete busco and number of contigs the same as previous.
+
+
 
 
