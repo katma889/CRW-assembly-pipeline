@@ -1,6 +1,6 @@
 # CRW-assembly-pipeline
 ## we sequenced the clover root weevil( Sitona obsoletus) using the data from 4 flow cell runs with 4 different individual and the data from all 4 runs were combined and basecalled with the guppy 5 version.
-script
+script for Guppy 5 
 ```
 #!/bin/bash -e
 
@@ -46,7 +46,7 @@ pycoQC -f ../sequencing_summary.txt -o pycoQC_output.html
 
 ```
 ###After viwing the quality of our output data via html file we further proceed to remove the reads mapping to the lambda phage genome from our fastq files using Nanolyse. This is because we used DNA CS while running our sample in the minion flow cells. The script for nanolyse id given below;
-Script
+Script for Nanolyse
 ```
 #!/bin/bash -e
 
@@ -75,7 +75,7 @@ Similarly the dna_cs. fasta we used in our experiment is given below;
 GCCATCAGATTGTGTTTGTTAGTCGCTTTTTTTTTTTGGAATTTTTTTTTTGGAATTTTTTTTTTGCGCTAACAACCTCCTGCCGTTTTGCCCGTGCATATCGGTCACGAACAAATCTGATTACTAAACACAGTAGCCTGGATTTGTTCTATCAGTAATCGACCTTATTCCTAATTAAATAGAGCAAATCCCCTTATTGGGGGTAAGACATGAAGATGCCAGAAAAACATGACCTGTTGGCCGCCATTCTCGCGGCAAAGGAACAAGGCATCGGGGCAATCCTTGCGTTTGCAATGGCGTACCTTCGCGGCAGATATAATGGCGGTGCGTTTACAAAAACAGTAATCGACGCAACGATGTGCGCCATTATCGCCTAGTTCATTCGTGACCTTCTCGACTTCGCCGGACTAAGTAGCAATCTCGCTTATATAACGAGCGTGTTTATCGGCTACATCGGTACTGACTCGATTGGTTCGCTTATCAAACGCTTCGCTGCTAAAAAAGCCGGAGTAGAAGATGGTAGAAATCAATAATCAACGTAAGGCGTTCCTCGATATGCTGGCGTGGTCGGAGGGAACTGATAACGGACGTCAGAAAACCAGAAATCATGGTTATGACGTCATTGTAGGCGGAGAGCTATTTACTGATTACTCCGATCACCCTCGCAAACTTGTCACGCTAAACCCAAAACTCAAATCAACAGGCGCCGGACGCTACCAGCTTCTTTCCCGTTGGTGGGATGCCTACCGCAAGCAGCTTGGCCTGAAAGACTTCTCTCCGAAAAGTCAGGACGCTGTGGCATTGCAGCAGATTAAGGAGCGTGGCGCTTTACCTATGATTGATCGTGGTGATATCCGTCAGGCAATCGACCGTTGCAGCAATATCTGGGCTTCACTGCCGGGCGCTGGTTATGGTCAGTTCGAGCATAAGGCTGACAGCCTGATTGCAAAATTCAAAGAAGCGGGCGGAACGGTCAGAGAGATTGATGTATGAGCAGAGTCACCGCGATTATCTCCGCTCTGGTTATCTGCATCATCGTCTGCCTGTCATGGGCTGTTAATCATTACCGTGATAACGCCATTACCTACAAAGCCCAGCGCGACAAAAATGCCAGAGAACTGAAGCTGGCGAACGCGGCAATTACTGACATGCAGATGCGTCAGCGTGATGTTGCTGCGCTCGATGCAAAATACACGAAGGAGTTAGCTGATGCTAAAGCTGAAAATGATGCTCTGCGTGATGATGTTGCCGCTGGTCGTCGTCGGTTGCACATCAAAGCAGTCTGTCAGTCAGTGCGTGAAGCCACCACCGCCTCCGGCGTGGATAATGCAGCCTCCCCCCGACTGGCAGACACCGCTGAACGGGATTATTTCACCCTCAGAGAGAGGCTGATCACTATGCAAAAACAACTGGAAGGAACCCAGAAGTATATTAATGAGCAGTGCAGATAGAGTTGCCCATATCGATGGGCAACTCATGCAATTATTGTGAGCAATACACACGCGCTTCCAGCGGAGTATAAATGCCTAAAGTAATAAAACCGAGCAATCCATTTACGAATGTTTGCTGGGTTTCTGTTTTAACAACATTTTCTGCGCCGCCACAAATTTTGGCTGCATCGACAGTTTTCTTCTGCCCAATTCCAGAAACGAAGAAATGATGGGTGATGGTTTCCTTTGGTGCTACTGCTGCCGGTTTGTTTTGAACAGTAAACGTCTGTTGAGCACATCCTGTAATAAGCAGGGCCAGCGCAGTAGCGAGTAGCATTTTTTTCATGGTGTTATTCCCGATGCTTTTTGAAGTTCGCAGAATCGTATGTGTAGAAAATTAAACAAACCCTAAACAATGAGTTGAAATTTCATATTGTTAATATTTATTAATGTATGTCAGGTGCGATGAATCGTCATTGTATTCCCGGATTAACTATGTCCACAGCCCTGACGGGGAACTTCTCTGCGGGAGTGTCCGGGAATAATTAAAACGATGCACACAGGGTTTAGCGCGTACACGTATTGCATTATGCCAACGCCCCGGTGCTGACACGGAAGAAACCGGACGTTATGATTTAGCGTGGAAAGATTTGTGTAGTGTTCTGAATGCTCTCAGTAAATAGTAATGAATTATCAAAGGTATAGTAATATCTTTTATGTTCATGGATATTTGTAACCCATCGGAAAACTCCTGCTTTAGCAAGATTTTCCCTGTATTGCTGAAATGTGATTTCTCTTGATTTCAACCTATCATAGGACGTTTCTATAAGATGCGTGTTTCTTGAGAATTTAACATTTACAACCTTTTTAAGTCCTTTTATTAACACGGTGTTATCGTTTTCTAACACGATGTGAATATTATCTGTGGCTAGATAGTAAATATAATGTGAGACGTTGTGACGTTTTAGTTCAGAATAAAACAATTCACAGTCTAAATCTTTTCGCACTTGATCGAATATTTCTTTAAAAATGGCAACCTGAGCCATTGGTAAAACCTTCCATGTGATACGAGGGCGCGTAGTTTGCATTATCGTTTTTATCGTTTCAATCTGGTCTGACCTCCTTGTGTTTTGTTGATGATTTATGTCAAATATTAGGAATGTTTTCACTTAATAGTATTGGTTGCGTAACAAAGTGCGGTCCTGCTGGCATTCTGGAGGGAAATACAACCGACAGATGTATGTAAGGCCAACGTGCTCAAATCTTCATACAGAAAGATTTGAAGTAATATTTTAACCGCTAGATGAAGAGCAAGCGCATGGAGCGACAAAATGAATAAAGAACAATCTGCTGATGATCCCTCCGTGGATCTGATTCGTGTAAAAAATATGCTTAATAGCACCATTTCTATGAGTTACCCTGATGTTGTAATTGCATGTATAGAACATAAGGTGTCTCTGGAAGCATTCAGAGCAATTGAGGCAGCGTTGGTGAAGCACGATAATAATATGAAGGATTATTCCCTGGTGGTTGACTGATCACCATAACTGCTAATCATTCAAACTATTTAGTCTGTGACAGAGCCAACACGCAGTCTGTCACTGTCAGGAAAGTGGTAAAACTGCAACTCAATTACTGCAATGCCCTCGTAATTAAGTGAATTTACAATATCGTCCTGTTCGGAGGGAAGAACGCGGGATGTTCATTCTTCATCACTTTTAATTGATGTATATGCTCTCTTTTCTGACGTTAGTCTCCGACGGCAGGCTTCAATGACCCAGGCTGAGAAATTCCCGGACCCTTTTTGCTCAAGAGCGATGTTAATTTGTTCAATCATTTGGTTAGGAAAGCGGATGTTGCGGGTTGTTGTTCTGCGGGTTCTGTTCTTCGTTGACATGAGGTTGCCCCGTATTCAGTGTCGCTGATTTGTATTGTCTGAAGTTGTTTTTACGTTAAGTTGATGCAGATCAATTAATACGATACCTGCGTCATAATTGATTATTTGACGTGGTTTGATGGCCTCCACGCACGTTGTGATATGTAGATGATAATCATTATCACTTTACGGGTCCTTTCCGGTGAAAAAAAAGGTACCAAAAAAAACATCGTCGTGAGTAGTGAACCGTAAGC
 ```
 ###Then we used porechop to remove the adapters from our reads. The scrpit for porechop is given below ;
-Script
+Script for Porechop
 ```
 #!/bin/bash -e
 
@@ -97,7 +97,7 @@ module load Porechop/0.2.4-gimkl-2020a-Python-3.8.2
 porechop -i ../crw_nanopore_filtered.fastq.gz -o crw_ont_nanolyse_porechop.fastq.gz --threads 10
 ```
 ## We used FLye to assemble the long read data from Oxford Minion. The script for flye assembly algorithm is given below;
-Script 
+Script for Flye 
 ```
 #!/bin/bash -e
 
@@ -121,7 +121,7 @@ flye --nano-hq ../crw_ont_nanolyse_porechop_nanofilt.fastq.gz -o ./Flye -t 10 -i
 
 ```
 This Flye output also includes a main file assembly.fasta which is further used for running the Quast. Quast is usually used to evaluate the assembly quality even without a reference genome. The script of Quast is given below;
-Script
+Script for Quast
 ```
 #!/bin/bash -e
 
@@ -149,7 +149,7 @@ assembly.fasta \
 ## By running the above script it yielded a Quast folder wwhich yielded a main file called report.txt.
 The above mentioned report.txt yielded us  the Complete BUSCO percent of 91.42 and partial BUSCO percent of 5.61 with the number of contigs equals to 82815.
 ## Then we used Purgehaplotigs to remove the haplotigs from our assembly. It helps us to to identify and reassign the duplicate contigs to improve our assembly. The script that we ran is given below;
-Script
+Script for Purgehaplotigs
 ```
 #!/bin/bash -e
 
@@ -184,7 +184,7 @@ purge_haplotigs purge -g assembly.fasta -c coverage_stats.csv -b aligned.bam
 #purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
 ```
 ### This yielded us the file called curated.fasta which we further ran quast on it. This purge haplotigs bring down the contigs number to 51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the RagTag algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for RAgTag is given below;
-Script
+Script for RagTag
 ```
 #!/bin/bash -e
 
@@ -212,7 +212,7 @@ placed_sequences        placed_bp	unplaced_sequences	unplaced_bp     gap_bp  gap
 ```
 ## We further ran quast in the output file from ragtag that is ragtag.scaffold.fasta and it further reduced to number of contigs to 47618 with the complete BUSCO percent and partial BUSCO percent to 90.10 and 5.94 respectively.
 ## Then we used lrscaff to further scaffold the assembly from ragtag using long reads that is crw_ont_nanolyse_porechop_nanofilt.fasta in our case. The script for lrscaff is given below;
-Script
+Script for LRScaff
 ```
 #!/bin/bash -e
 
@@ -259,7 +259,7 @@ java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.1
 ### we checked the output from the lrscaff from quast and scaffolds5_scaffolds resulted in the reduction in the number of contigs to 26788 with a complete BUSCO percent of 94.72 and partial BUSCO 2.64 percent respectively. 
 
 ## we further scaffold our genome usimng long DNA sequences from ONT (crw_ont_nanolyse_porechop_nanofilt.fasta) using RAILS v1.5.1 and Cobbler v0.6.1. Here RAIlS is known as all-in -one scaffolder and gap-filler whereas Cobbler is tool that patch gaps automatically. The script used for this is given below;
-Script
+Script for RAILS and Cobbler
 ```
 #!/bin/bash -e
 
