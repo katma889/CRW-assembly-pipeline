@@ -380,5 +380,6 @@ ragtag.py scaffold crw.10x.all.pseudo.fasta gapclosed.fasta
 
 ```
 ### By running above script we got ragtag.scaffold.fasta as output file which we further used for scafollding agian using ragtag. We renamed this output as assembly.fasta and also changed the sequence header to make it compatible to use in scaffolding using ragtag. The script for ragtag for second times is same except using assembly.fasta instead of gapclosed.fasta. By running the ragtag script this time we used ragtag.scaffold.fasta. 
+## We further used arbit r 
 
 
