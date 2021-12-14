@@ -46,6 +46,7 @@ pycoQC -f ../sequencing_summary.txt -o pycoQC_output.html
 
 ```
 ###After viwing the quality of our output data via html file we further proceed to remove the reads mapping to the lambda phage genome from our fastq files using Nanolyse. This is because we used DNA CS while running our sample in the minion flow cells. The script for nanolyse id given below;
+
 Script for Nanolyse
 ```
 #!/bin/bash -e
