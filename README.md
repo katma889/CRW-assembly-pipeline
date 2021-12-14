@@ -286,6 +286,20 @@ sh runRAILSminimapSTREAM.sh scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.f
 /scale_wlg_persistent/filesets/opt_nesi/CS400_centos7_bdw/SAMtools/1.13-GCC-9.2.0/bin/samtools 10
 
 ```
+#### By running the script given above first we will get the output of cobbler as crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_gapsFill.fa in my case which was further used by RAILS to get the final output as crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.scaffolds.fa at the end. The summary of my RAILS log file is given below;
+```
+/RAILS Summary ---------------
+Number of merges induced : 47
+Average closed gap length (bp) : 2916.23
+Closed gap length st.dev +/- : 6705.50
+Total bases added : 137063
+Largest gap resolved (bp) : 38027
+Shortest gap resolved (bp) : 6
+---------------------------------------------
+*0 bp gaps are not counted towards the average
+crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.log 
+
+```
 
 
 
