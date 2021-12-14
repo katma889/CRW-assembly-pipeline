@@ -353,8 +353,30 @@ export PATH=/nesi/nobackup/uoo02752/bin/LR_Gapcloser/src/:$PATH
 sh LR_Gapcloser.sh -i crw.scaffolds.fasta -l crw_ont_nanolyse_porechop_nanofilt.fasta -s n -t 16 -r 10
 
 ```
-Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) to 3002.56 from 8276.39   using crw_ont_nanolyse_porechop_nanofilt.fasta for gap filling and increased the partial BUSCO to 3.30 from 2.97 while complete busco and number of contigs the same as previous.
+By running above script we got iteration -1 to iteration-10 folders with the common filename gapclosed.fasta in each of them. Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) to 3002.56 from 8276.39   using crw_ont_nanolyse_porechop_nanofilt.fasta for gap filling and increased the partial BUSCO to 3.30 from 2.97 while complete busco and number of contigs the same as previous.
 
+## we further scaffold the output (gapclosed.fasta) by our supernova assembly from 10X (scaffold crw.10x.all.pseudo.fasta) ragtag. 
+Script for ragtag
+```
+#!/bin/bash -e
 
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name ragtag.10x
+#SBATCH --mem=50G
+#SBATCH --time=05:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
+
+ragtag.py scaffold crw.10x.all.pseudo.fasta gapclosed.fasta
+
+```
 
 
