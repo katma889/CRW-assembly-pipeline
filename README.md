@@ -381,7 +381,7 @@ ragtag.py scaffold crw.10x.all.pseudo.fasta gapclosed.fasta
 ```
 ### By running above script we got ragtag.scaffold.fasta as output file which we further used for scafollding agian using ragtag. We renamed this output as assembly.fasta and also changed the sequence header to make it compatible to use in scaffolding using ragtag. The script for ragtag for second times is same except using assembly.fasta instead of gapclosed.fasta. By running the ragtag script this time we used ragtag.scaffold.fasta. 
 
-## We further used ARBitR for further merging and scaffolding our current genome assembly from ragtag. As it takes alignment file in the bam/sam format with 10X Chromium barcodes when provided with genome fasta file used for mapping, it will sort and merge the provided contigs into scaffolds. Therefore, first we created a reference data ragtag.scaffold.fasta and alignment in the folder id CRW using longranger to be used by the ARBitR. 
+## We further used ARBitR for further merging and scaffolding our current genome assembly from ragtag. As it takes alignment file in the bam/sam format (for example possorted_bam.bam in our case)  with 10X Chromium barcodes when provided with genome fasta file used for mapping, it will sort and merge the provided contigs into scaffolds. Therefore, first we created a reference data ragtag.scaffold.fasta and alignment in the folder id CRW using longranger to be used by the ARBitR. 
 
 Script for longranger
 
@@ -410,3 +410,61 @@ longranger align --id=CRW \
 --reference=/nesi/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/refdata-ragtag.scaffold
 
 ```
+## Then we ran ARBitR on the aligned scaffold fasta file using possorted_bam.bam.
+
+Script for ARBitR
+
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name arbitr.crw
+#SBATCH --mem=5G
+#SBATCH --time=05:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+export PATH="/nesi/nobackup/uoo02752/nematode/bin/ARBitR/src:$PATH"
+export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
+
+arbitr.py -i ragtag.scaffold.fasta -o output.arbitr.scaffolds ./CRW/outs/possorted_bam.bam
+
+```
+## We further ran arks on the output from the above script.
+Script for arks
+
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 16
+##SBATCH --qos=debug
+#SBATCH --job-name arks.crw
+#SBATCH --mem=50G
+#SBATCH --time=72:00:00
+##SBATCH --time=00:15:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load BWA/0.7.17-GCC-9.2.0
+module load SAMtools/1.13-GCC-9.2.0
+module load BEDTools/2.29.2-GCC-9.2.0
+module load LINKS/1.8.7-GCC-9.2.0
+export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/gupppy.5/pycoqc/nanolyse/porechop/nanoqc/flye/M.neg_flye/purgehaplotigs/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/lrgapcloser/Output/rails.cobler/ragtag/ragtag_output/arbitr/arbitr.default/arbitr.2/arcs.links/arks-1.0.4/Examples:$PATH
+export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/gupppy.5/pycoqc/nanolyse/porechop/nanoqc/flye/M.neg_flye/purgehaplotigs/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/lrgapcloser/Output/rails.cobler/ragtag/ragtag_output/arbitr/arbitr.default/arbitr.2/arcs.links/arks-1.0.4/Arks:$PATH
+
+arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
+
+```
+
