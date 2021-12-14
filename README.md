@@ -300,6 +300,33 @@ Shortest gap resolved (bp) : 6
 crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.log 
 
 ```
+We then ran quast for the output file from the rails. The QUAST report is given below;
+```
+Assembly                    crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.scaffolds
+# contigs (>= 0 bp)         26741                                                                               
+# contigs (>= 1000 bp)      23273                                                                               
+# contigs (>= 5000 bp)      15510                                                                               
+# contigs (>= 10000 bp)     13401                                                                               
+# contigs (>= 25000 bp)     10776                                                                               
+# contigs (>= 50000 bp)     8265                                                                                
+Total length (>= 0 bp)      1507291159                                                                          
+Total length (>= 1000 bp)   1504938917                                                                          
+Total length (>= 5000 bp)   1486560638                                                                          
+Total length (>= 10000 bp)  1471422085                                                                          
+Total length (>= 25000 bp)  1427853847                                                                          
+Total length (>= 50000 bp)  1335778686                                                                          
+# contigs                   17613                                                                               
+Largest contig              4214430                                                                             
+Total length                1494738492                                                                          
+GC (%)                      31.82                                                                               
+N50                         178346                                                                              
+N75                         98144                                                                               
+L50                         2465                                                                                
+L75                         5281                                                                                
+# N's per 100 kbp           8276.39                                                                             
+Complete BUSCO (%)          94.06                                                                               
+Partial BUSCO (%)           2.97
 
+```
 
 
