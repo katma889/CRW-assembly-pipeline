@@ -501,3 +501,36 @@ export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/guppp
 arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
 
 ```
+## Then we used Rascaf to improve the assembly from above using our PE RNA-seq data. This will enable us to imrove our long-range contiguity and order information from intron-spanning RNA-seq read pairs to improve our draft assembly particularly in gene regions. Therefore we imorted merged fq files for Our PE mRNA-seq reads (merge.R1.fq and merge.R2.fq .  Before running the Rascaf we first need to align our RNA-seq reads mapping into our genome using Hisat2. The script for Hisat2  is given below;
+Script for Hisat2
+
+```
+#!/bin/bash -e
+
+#SBATCH --job-name=hisat.mRNA.crw
+#SBATCH --account=uoo02772
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --mem=40G
+##SBATCH --qos=debug
+##SBATCH --time=00:15:00
+#SBATCH --time=20:00:00
+#SBATCH --output=%x.%j.out
+#SBATCH --error=%x.%j.err
+#SBATCH --mail-type=All
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load HISAT2/2.2.1-gimkl-2020a
+module load Python/3.9.5-gimkl-2020a
+module load SAMtools/1.13-GCC-9.2.0
+
+#hisat2-build -p 10 output.arbitr.scaffolds_c4_m50-10000_k100_r0.05_e30000_z1000_l2_a0.9.scaffolds.fa$
+
+mkdir alignment
+hisat2 -x hisat2.RNA.crw -1 ./crw-merged-RNAseq/merge.R1.fq -2 ./crw-merged-RNAseq/merge.R2.fq -S ali$
+samtools view -bS alignment/crw_mRNA_alignment.sam > alignment/crw_mRNA_alignment.bam
+samtools sort alignment/crw_mRNA_alignment.bam -o alignment/crw_mRNA_alignment_sorted.bam
+
+```
