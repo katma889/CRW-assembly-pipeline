@@ -534,3 +534,32 @@ samtools view -bS alignment/crw_mRNA_alignment.sam > alignment/crw_mRNA_alignmen
 samtools sort alignment/crw_mRNA_alignment.bam -o alignment/crw_mRNA_alignment_sorted.bam
 
 ```
+##This prodiced us the result in SAM file which is then converted to BAM which is further converted into sorted BAM as the final output to be use in our further assembly process using Rescaf.
+# scripot for rascaf
+```
+#!/bin/bash -e
+
+#SBATCH --job-name=rascaf.crw
+#SBATCH --account=uoo02772
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --mem=5G
+##SBATCH --qos=debug
+##SBATCH --time=00:15:00
+#SBATCH --time=08:00:00
+#SBATCH --output=%x.%j.out
+#SBATCH --error=%x.%j.err
+#SBATCH --mail-type=All
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+export PATH=/nesi/nobackup/uoo02752/nematode/bin/rascaf:$PATH
+
+#rascaf -b ../crw_mRNA_alignment_sorted.bam \
+#        -f ../../output.arbitr.scaffolds_c4_m50-10000_k100_r0.05_e30000_z1000_l2_a0.9.scaffolds.fa \
+#        -o crw_mRNA_scaffold
+
+rascaf-join -r crw_mRNA_scaffold.out -o crw_mRNA_scaffold
+
+```
