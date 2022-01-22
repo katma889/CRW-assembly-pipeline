@@ -591,3 +591,25 @@ Complete BUSCO (%)          94.06
 Partial BUSCO (%)           2.97             
 ~
 ```
+## WE also ran Busco version 5.2.2 using insect dataset which produced the result as follows;
+```
+BUSCO version is: 5.2.2 
+# The lineage dataset is: insecta_odb10 (Creation date: 2020-09-10, number of genomes: 75, number of BUSCOs: 1367)
+# Summarized benchmarking in BUSCO notation for file /scale_wlg_nobackup/filesets/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/arks/rascaf/alignment/rascaf/crw_mRNA_scaffold.fa
+# BUSCO was run in mode: genome
+# Gene predictor used: metaeuk
+
+        ***** Results: *****
+
+        C:95.5%[S:75.1%,D:20.4%],F:2.9%,M:1.6%,n:1367      
+        1305    Complete BUSCOs (C)                        
+        1026    Complete and single-copy BUSCOs (S)        
+        279     Complete and duplicated BUSCOs (D)         
+        40      Fragmented BUSCOs (F)                      
+        22      Missing BUSCOs (M)                         
+        1367    Total BUSCO groups searched                
+
+Dependencies and versions:
+        hmmsearch: 3.3
+        metaeuk: GITDIR-NOTFOUND
+        ```
