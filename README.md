@@ -563,3 +563,31 @@ export PATH=/nesi/nobackup/uoo02752/nematode/bin/rascaf:$PATH
 rascaf-join -r crw_mRNA_scaffold.out -o crw_mRNA_scaffold
 
 ```
+## We ran quast on the final assembly produced by rascaf assembly which produced the assembly result as below;
+```
+ssembly                    crw_mRNA_scaffold
+# contigs (>= 0 bp)         24773            
+# contigs (>= 1000 bp)      21366            
+# contigs (>= 5000 bp)      13845            
+# contigs (>= 10000 bp)     11837            
+# contigs (>= 25000 bp)     9455             
+# contigs (>= 50000 bp)     7321             
+Total length (>= 0 bp)      1506904542       
+Total length (>= 1000 bp)   1504595759       
+Total length (>= 5000 bp)   1486843969       
+Total length (>= 10000 bp)  1472447678       
+Total length (>= 25000 bp)  1433237665       
+Total length (>= 50000 bp)  1355275123       
+# contigs                   15864            
+Largest contig              5307789          
+Total length                1494691782       
+GC (%)                      31.84            
+N50                         216456           
+N75                         113389           
+L50                         1980             
+L75                         4353             
+# N's per 100 kbp           3006.78          
+Complete BUSCO (%)          94.06            
+Partial BUSCO (%)           2.97             
+~
+```
