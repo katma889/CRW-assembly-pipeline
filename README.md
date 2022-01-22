@@ -591,7 +591,7 @@ Complete BUSCO (%)          94.06
 Partial BUSCO (%)           2.97             
 ~
 ```
-## WE also ran Busco version 5.2.2 using insect dataset which produced the result as follows;
+## We also ran Busco version 5.2.2 using insect dataset which produced the result as follows;
 ```
 BUSCO version is: 5.2.2 
 # The lineage dataset is: insecta_odb10 (Creation date: 2020-09-10, number of genomes: 75, number of BUSCOs: 1367)
