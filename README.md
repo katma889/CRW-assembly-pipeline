@@ -613,3 +613,6 @@ Dependencies and versions:
         hmmsearch: 3.3
         metaeuk: GITDIR-NOTFOUND
         ```
+## After finalising our raw assembly the next step is to use Blobtools manual for blasting our assemly against nt database.
+### Script for the blastn
+```
