@@ -726,4 +726,6 @@ C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367
         112     Complete and duplicated BUSCOs (D)         
         41      Fragmented BUSCOs (F)                      
         35      Missing BUSCOs (M)                         
-        1367    Total BUSCO groups searched    
+        1367    Total BUSCO groups searched   
+        ```
+        The duplicate busco was reduced from 20 % to 8.2%.
