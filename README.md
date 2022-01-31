@@ -613,6 +613,61 @@ Dependencies and versions:
         hmmsearch: 3.3
         metaeuk: GITDIR-NOTFOUND
         ```
-## After finalising our raw assembly the next step is to use Blobtools manual for blasting our assemly against nt database.
-### Script for the blastn
+## After finalising our raw assembly the next step is we re-ran purge-haplotigs using the scripts beow;
+###Script for purge-haplotigs
+```
+
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name purgehap.crw
+#SBATCH --mem=50G
+#SBATCH --time=05:00:00
+#SBATCH --account=uoo02752
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load SAMtools/1.13-GCC-9.2.0
+module load minimap2/2.20-GCC-9.2.0
+module load BEDTools/2.29.2-GCC-9.2.0
+
+#minimap2 -t 10 -ax map-ont crw_mRNA_scaffold.fa crw_ont_nanolyse_porechop_nanofilt.fasta \
+#--secondary=no | samtools sort -m 5G -o aligned.bam -T tmp.ali
+
+export PATH="/nesi/nobackup/uoo02752/.conda/envs/purge_haplotigs_env/bin:$PATH"
+#purge_haplotigs hist -b aligned.bam -g crw_mRNA_scaffold.fa -t 10
+
+#purge_haplotigs cov -i aligned.bam.gencov -l 0 -m 15 -h 190 -o coverage_stats.csv
+
+purge_haplotigs purge -g crw_mRNA_scaffold.fa -c coverage_stats.csv -b aligned.bam
+
+#purge_haplotigs clip -p curated.fasta -h curated.haplotigs.fasta -t 10
+```
+## Then we further use the output of above script "curated.haplotigs.fasta" to scaffold our final genome "curated.fasta"using ragtag.
+### Script for ragtag
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name ragtag.crw
+#SBATCH --mem=50G
+#SBATCH --time=05:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
+
+ragtag.py scaffold curated.haplotigs.fasta curated.fasta
+
 ```
