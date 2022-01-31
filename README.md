@@ -21,7 +21,7 @@ module load ont-guppy-gpu/5.0.7
 guppy_basecaller -i ../ -s . --flowcell FLO-MIN106 --kit SQK-LSK109 --num_callers 4 -x auto --recursive --trim_barcodes --disable_qscore_filtering
 
 ```
-##  Along we the merged fastqc files from guppy we also got the sequencing summary.txt file which we process further with pycoQC-2.5.2 which hives the html file in output makes the viewing data for quality easier.
+##  Along we the merged fastqc files from guppy we also got the sequencing summary.txt file which we process further with pycoQC-2.5.2 which gives the html file in output makes the viewing data for quality easier.
 Script for pycoqc
 ```
 #!/bin/bash -e
@@ -669,5 +669,52 @@ purge_haplotigs purge -g crw_mRNA_scaffold.fa -c coverage_stats.csv -b aligned.b
 export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 
 ragtag.py scaffold curated.haplotigs.fasta curated.fasta
+
+```
+## by running script above we got the oupur folder "ragtag_output" with the assembly "ragtag.scaffold.fasta" which we used for repeating the ragtag assembly for better output named as "ragtag2" where the output above is ussed as input for ragtag 2.
+### Script for "ragtag2"
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name ragtag.crw
+#SBATCH --mem=50G
+#SBATCH --time=05:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
+
+ragtag.py scaffold curated.haplotigs.fasta ragtag.scaffold.renamed.fasta
+```
+### the output assembly obtained by running above script is used as our final assembly "ragtag.scaffold.fasta" was renamed and changes in the header as "CRW_assembly.fasta" and ran BUSCO on it before processing by "blobtools". Blobtools are a modular command-line solution for removing contaminats from associated microorganisms  and other non target organisms by better visualisation, quality control and taxonomic partitioning of genome datasets.
+### Script for BUSCO
+```
+#!/bin/bash -e
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 16
+#SBATCH --job-name busco.crw
+#SBATCH --mem=30G
+#SBATCH --time=72:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load BUSCO/5.2.2-gimkl-2020a
+
+cp -r $AUGUSTUS_CONFIG_PATH /nesi/nobackup/uoo02772/bin/MyAugustusConfig
+export AUGUSTUS_CONFIG_PATH=/nesi/nobackup/uoo02772/bin/MyAugustusConfig
+busco --in ../CRW_assembly.fasta  --out Busco -c 16 -m genome -l insecta_odb10
+
 
 ```
