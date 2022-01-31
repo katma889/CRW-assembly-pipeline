@@ -693,7 +693,7 @@ export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 
 ragtag.py scaffold curated.haplotigs.fasta ragtag.scaffold.renamed.fasta
 ```
-### the output assembly obtained by running above script is used as our final assembly "ragtag.scaffold.fasta" was renamed and changes in the header as "CRW_assembly.fasta" and ran BUSCO on it before processing by "blobtools". Blobtools are a modular command-line solution for removing contaminats from associated microorganisms  and other non target organisms by better visualisation, quality control and taxonomic partitioning of genome datasets.
+### the output assembly obtained by running above script is used as our final assembly "ragtag.scaffold.fasta" was renamed and changes in the header as "CRW_assembly.fasta" and ran BUSCO on it before processing by "blobtools". Blobtools are a modular command-line solution for removing contaminats from associated microorganisms  and other non target organisms by better visualisation, quality control and taxonomic partitioning of genome datasets. This will aid in improving our assemblies by screening of the final assemblies produced from ragtag2 for potential contaminants.
 ### Script for BUSCO
 ```
 #!/bin/bash -e
