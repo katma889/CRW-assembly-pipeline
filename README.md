@@ -718,3 +718,12 @@ busco --in ../CRW_assembly.fasta  --out Busco -c 16 -m genome -l insecta_odb10
 
 
 ```
+## Running the script above we got the busco version 5.2.2  on insect data base we got output as;
+```
+C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367       
+        1291    Complete BUSCOs (C)                        
+        1179    Complete and single-copy BUSCOs (S)        
+        112     Complete and duplicated BUSCOs (D)         
+        41      Fragmented BUSCOs (F)                      
+        35      Missing BUSCOs (M)                         
+        1367    Total BUSCO groups searched    
