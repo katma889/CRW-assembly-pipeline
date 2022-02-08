@@ -722,6 +722,7 @@ By running script above we got the oupur folder `ragtag_output` with the assembl
 `Script for "ragtag2`
 
 ```
+
 #!/bin/bash -e
 
 #SBATCH --nodes 1
@@ -963,6 +964,7 @@ Then we used `RAgTag` to scaffold our assembly `CRW_Assembly.filtered.fasta` usi
 `Script for RagTag`
 
 ```
+
 #!/bin/bash -e
 
 #SBATCH --nodes 1
