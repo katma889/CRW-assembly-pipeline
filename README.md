@@ -612,11 +612,12 @@ BUSCO version is: 5.2.2
 Dependencies and versions:
         hmmsearch: 3.3
         metaeuk: GITDIR-NOTFOUND
-        ```
-## After finalising our raw assembly the next step is we re-ran purge-haplotigs using the scripts beow;
-###Script for purge-haplotigs
 ```
 
+## After finalising our raw assembly the next step is we re-ran purge-haplotigs using the scripts beow;
+###Script for purge-haplotigs
+
+```
 #!/bin/bash -e
 
 #SBATCH --nodes 1
@@ -650,6 +651,7 @@ purge_haplotigs purge -g crw_mRNA_scaffold.fa -c coverage_stats.csv -b aligned.b
 ```
 ## Then we further use the output of above script "curated.haplotigs.fasta" to scaffold our final genome "curated.fasta"using ragtag.
 ### Script for ragtag
+
 ```
 #!/bin/bash -e
 
@@ -669,10 +671,11 @@ purge_haplotigs purge -g crw_mRNA_scaffold.fa -c coverage_stats.csv -b aligned.b
 export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 
 ragtag.py scaffold curated.haplotigs.fasta curated.fasta
-
 ```
+
 ## by running script above we got the oupur folder "ragtag_output" with the assembly "ragtag.scaffold.fasta" which we used for repeating the ragtag assembly for better output named as "ragtag2" where the output above is ussed as input for ragtag 2.
 ### Script for "ragtag2"
+
 ```
 #!/bin/bash -e
 
@@ -693,8 +696,10 @@ export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 
 ragtag.py scaffold curated.haplotigs.fasta ragtag.scaffold.renamed.fasta
 ```
+
 ### the output assembly obtained by running above script is used as our final assembly "ragtag.scaffold.fasta" was renamed and changes in the header as "CRW_assembly.fasta" and ran BUSCO on it before processing by "blobtools". Blobtools are a modular command-line solution for removing contaminats from associated microorganisms  and other non target organisms by better visualisation, quality control and taxonomic partitioning of genome datasets. This will aid in improving our assemblies by screening of the final assemblies produced from ragtag2 for potential contaminants.
 ### Script for BUSCO
+
 ```
 #!/bin/bash -e
 #SBATCH --nodes 1
@@ -718,7 +723,8 @@ busco --in ../CRW_assembly.fasta  --out Busco -c 16 -m genome -l insecta_odb10
 
 
 ```
-## Running the script above we got the busco version 5.2.2  on insect data base we got output as;
+## Running the script above we got the busco version 5.2.2  on insect data base we got output as
+
 ```
 C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367       
         1291    Complete BUSCOs (C)                        
@@ -729,3 +735,4 @@ C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367
         1367    Total BUSCO groups searched   
         ```
         The duplicate busco was reduced from 20 % to 8.2%.
+```
