@@ -841,3 +841,19 @@ diamond blastx \
 --out xag.blastx.out
 
 ```
+### 1.4 Database
+Blobdatabase folder was created and then we added the results from blastn, diamond.blastx and coverage information in that folder. We download filtered.taxdump dataset  as described in the "https://blobtoolkit.genomehubs.org/install/#databases" and then created a textfile named "CRW_assembly.yaml" which is included in the script below
+CRW_assembly.yaml
+
+```
+assembly:
+  accession: 000_000000000.0
+  alias: S_obsoleuts
+  bioproject: 00000000
+  biosample: 00000000000
+  record_type: scaffolds
+taxon:
+  name: Sitona obsoletus
+  
+  ```
+  
