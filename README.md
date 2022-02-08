@@ -955,11 +955,32 @@ CRW_Assembly
 ```
 By running above script we got our output as
 1. Filtered assembly CRW_Assembly.filtered.fasta stored in path/to/output/folder/filter
-2. CRW_Assembly.filtered.inverse.fasta stored in path/to/output/folder/filter.inverse
+2. Inverse filtered file `CRW_Assembly.filtered.inverse.fasta` stored in path/to/output/folder/filter.inverse
 
 ```
 Then we used `RAgTag` to scaffold our assembly `CRW_Assembly.filtered.fasta` using `CRW_Assembly.filtered.inverse.fasta`
 
 `Script for RagTag`
+
+```
+
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+#SBATCH --job-name ragtag.crw
+#SBATCH --mem=6G
+#SBATCH --time=04:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
+
+ragtag.py scaffold CRW_assembly.invert.minl1000.covmin5.fasta CRW_assembly.filtered.fasta
 
 ```
