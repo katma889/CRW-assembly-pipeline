@@ -941,7 +941,8 @@ CRW_Assembly
 
 ```
 
-### Extract the shorter scaffolds and scaffolds with low coverage
+### Extract the shorter scaffolds and scaffolds with low coverage which were earlier discarded by blobtools filter 
+
 ```
 /path/to/blobtools/ filter \
 --param CRW_Assembly_cov--Min=5 \
@@ -952,4 +953,13 @@ CRW_Assembly
 CRW_Assembly
 
 ```
+By running above script we got our output as
+1. Filtered assembly CRW_Assembly.filtered.fasta stored in path/to/output/folder/filter
+2. CRW_Assembly.filtered.inverse.fasta stored in path/to/output/folder/filter.inverse
 
+```
+Then we used `RAgTag` to scaffold our assembly `CRW_Assembly.filtered.fasta` using `CRW_Assembly.filtered.inverse.fasta`
+
+`Script for RagTag`
+
+```
