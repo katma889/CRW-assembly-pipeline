@@ -736,3 +736,35 @@ C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367
         ```
         The duplicate busco was reduced from 20 % to 8.2%.
 ```
+### BlobTools which is a reimplementation of BlobTools written in Python 3. First we intall the BlobTools2 and its dependencies and then fetch the nt database and UniProt database  and formattt it as per the Blobtools requiremnts. For formatting the UniProt databases we downloaded the NCBI taxdump and then uncompressed in asister directory in afew steps. We also have to fetch the BUSCO lineages that we plan to use such as eukaryota or insecta. For this we followed (https://blobtoolkit.genomehubs.org/install/). The steps of actions we follwed are given below;
+## 1. BlobTools2
+### 1.1 Coverage
+By mapping the ont long reads to our final assembly we got coverage data as "bam file".
+Script for Coverage
+
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 20
+##SBATCH --qos=debug
+#SBATCH --job-name coverage.crw
+#SBATCH --mem=80G
+##SBATCH --time=00:15:00
+#SBATCH --time=08:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=bhaup057@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load minimap2/2.18-GCC-9.2.0
+module load SAMtools/1.12-GCC-9.2.0
+
+minimap2 -ax map-ont -t 20 CRW_assembly.fasta \
+crw_ont_nanolyse_porechop_nanofilt.fastq.gz | samtools sort -@10 -O BAM -o CRW_Assembly.bam -
+
+```
+
