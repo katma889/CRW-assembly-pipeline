@@ -1,4 +1,5 @@
 ## Sitona obsoletus-assembly-pipeline
+
 We sequenced the clover root weevil( Sitona obsoletus) using the data from 4 flow cell runs with 4 different individual and the data from all 4 runs were combined and basecalled with the guppy 5 version.
 
 `Script for Guppy 5`
@@ -386,7 +387,7 @@ export PATH=/nesi/nobackup/uoo02752/bin/LR_Gapcloser/src/:$PATH
 sh LR_Gapcloser.sh -i crw.scaffolds.fasta -l crw_ont_nanolyse_porechop_nanofilt.fasta -s n -t 16 -r 10
 
 ```
-By running above script we got iteration -1 to iteration-10 folders with the common filename gapclosed.fasta in each of them. Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) to 3002.56 from 8276.39 using `crw_ont_nanolyse_porechop_nanofilt.fasta` for gap filling and increased the partial BUSCO to 3.30 from 2.97 while complete busco and number of contigs the same as previous.
+By running above script we got iteration -1 to iteration-10 folders with the common filename `gapclosed.fasta` in each of them. Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) to 3002.56 from 8276.39 using `crw_ont_nanolyse_porechop_nanofilt.fasta` for gap filling and increased the partial BUSCO to 3.30 from 2.97 while complete busco and number of contigs the same as previous.
 
 We further scaffold the output `gapclosed.fasta` by our supernova assembly from 10X `scaffold crw.10x.all.pseudo.fasta` from ragtag. 
 
@@ -413,9 +414,9 @@ export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 ragtag.py scaffold crw.10x.all.pseudo.fasta gapclosed.fasta
 
 ```
-By running above script we got ragtag.scaffold.fasta as output file which we further used for scafollding agian using `ragtag`. We renamed this output as `assembly.fasta` and also changed the sequence header to make it compatible to use in scaffolding using ragtag. The script for ragtag for second times is same except using `assembly.fasta` instead of `gapclosed.fasta`. By running the ragtag script this time we used `ragtag.scaffold.fasta` 
+By running above script we got `ragtag.scaffold.fasta` as output file which we further used for scafollding agian using `ragtag`. We renamed this output as `assembly.fasta` and also changed the sequence header to make it compatible to use in scaffolding using ragtag. The script for ragtag for second times is same except using `assembly.fasta` instead of `gapclosed.fasta`. By running the ragtag script this time we used `ragtag.scaffold.fasta` 
 
-We further used `ARBitR` for further merging and scaffolding our current genome assembly from ragtag. As it takes alignment file in the bam/sam format (for example possorted_bam.bam in our case)  with 10X Chromium barcodes when provided with genome fasta file used for mapping, it will sort and merge the provided contigs into scaffolds. Therefore, first we created a reference data `ragtag.scaffold.fasta` and alignment in the folder id CRW using longranger to be used by the `ARBitR`. 
+We further used `ARBitR` for further merging and scaffolding our current genome assembly from ragtag. As it takes alignment file in the bam/sam format (for example possorted_bam.bam in our case)  with 10X Chromium barcodes when provided with genome fasta file used for mapping, it will sort and merge the provided contigs into scaffolds. Therefore, first we created a reference data `ragtag.scaffold.fasta` and alignment in the folder id CRW using `longranger` to be used by the `ARBitR`. 
 
 `Script for longranger`
 
@@ -444,7 +445,7 @@ longranger align --id=CRW \
 --reference=/nesi/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/refdata-ragtag.scaffold
 
 ```
-Then we ran ARBitR on the aligned scaffold fasta file using possorted_bam.bam.
+Then we ran ARBitR on the aligned scaffold fasta file using `possorted_bam.bam`.
 
 `Script for ARBitR`
 
@@ -536,7 +537,7 @@ export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/guppp
 arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
 
 ```
-Then we used Rascaf to improve the assembly from above using our PE RNA-seq data. This will enable us to imrove our long-range contiguity and order information from intron-spanning RNA-seq read pairs to improve our draft assembly particularly in gene regions. Therefore we imorted merged fq files for Our PE mRNA-seq reads (`merge.R1.fq` and `merge.R2.fq` .  Before running the Rascaf we first need to align our RNA-seq reads mapping into our genome using `Hisat2`. The script for Hisat2  is given below;
+Then we used `Rascaf`to improve the assembly from above using our PE RNA-seq data. This will enable us to imrove our long-range contiguity and order information from intron-spanning RNA-seq read pairs to improve our draft assembly particularly in gene regions. Therefore we imorted merged fq files for Our PE mRNA-seq reads (`merge.R1.fq` and `merge.R2.fq` .  Before running the `Rascaf` we first need to align our RNA-seq reads mapping into our genome using `Hisat2`. The script for Hisat2  is given below;
 
 `Script for Hisat2`
 
