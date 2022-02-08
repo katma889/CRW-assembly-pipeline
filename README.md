@@ -963,7 +963,6 @@ Then we used `RAgTag` to scaffold our assembly `CRW_Assembly.filtered.fasta` usi
 `Script for RagTag`
 
 ```
-
 #!/bin/bash -e
 
 #SBATCH --nodes 1
