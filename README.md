@@ -892,7 +892,7 @@ diamond blastx \
 ```
 ## 1.4 Database
 Blobdatabase folder was created and then we added the results from blastn, diamond.blastx and coverage information in that folder. We download taxdump dataset as described [here](https://blobtoolkit.genomehubs.org/install/#databases) and then created a textfile named `CRW_assembly.yaml` which is included in the script below
-CRW_assembly.yaml
+
 
 ```
 assembly:
@@ -938,6 +938,7 @@ taxon:
 --fasta ../CRW_assembly.fasta \
 --output ./filtered.bacteria.viruses.minl1000.covmin5 \
 CRW_Assembly
+
 ```
 
 ### Extract the shorter scaffolds and scaffolds with low coverage
@@ -949,5 +950,6 @@ CRW_Assembly
 --invert \
 --output ./filter.mincov5.minlen1000.invert \
 CRW_Assembly
+
 ```
 
