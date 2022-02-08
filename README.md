@@ -736,7 +736,7 @@ C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367
         ```
         The duplicate busco was reduced from 20 % to 8.2%.
 ```
-### BlobTools which is a reimplementation of BlobTools written in Python 3. First we intall the BlobTools2 and its dependencies and then fetch the nt database and UniProt database  and formattt it as per the Blobtools requiremnts. For formatting the UniProt databases we downloaded the NCBI taxdump and then uncompressed in asister directory in afew steps. We also have to fetch the BUSCO lineages that we plan to use such as eukaryota or insecta. For this we followed (https://blobtoolkit.genomehubs.org/install/). The steps of actions we follwed are given below;
+### BlobTools which is a reimplementation of BlobTools written in Python 3. First we intall the BlobTools2 and its dependencies and then fetch the nt database and UniProt database  and formattt it as per the Blobtools requiremnts. For formatting the UniProt databases we downloaded the NCBI taxdump and then uncompressed in asister directory in afew steps. We also have to fetch the BUSCO lineages that we plan to use such as eukaryota or insecta. For this we followed [this](https://blobtoolkit.genomehubs.org/install/). The steps of actions we follwed are given below;
 ## 1. BlobTools2
 ### 1.1 Coverage
 By mapping the ont long reads to our final assembly we got coverage data as "bam file".
