@@ -958,14 +958,12 @@ CRW_Assembly
 By running above script we got our output as
 1. Filtered assembly CRW_Assembly.filtered.fasta stored in path/to/output/folder/filter
 2. Inverse filtered file `CRW_Assembly.filtered.inverse.fasta` stored in path/to/output/folder/filter.inverse
-
-```
+3. 
 Then we used `RAgTag` to scaffold our assembly `CRW_Assembly.filtered.fasta` using `CRW_Assembly.filtered.inverse.fasta`
 
 `Script for RagTag`
 
 ```
-
 #!/bin/bash -e
 
 #SBATCH --nodes 1
