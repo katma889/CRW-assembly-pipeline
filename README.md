@@ -650,7 +650,7 @@ purge_haplotigs purge -g crw_mRNA_scaffold.fa -c coverage_stats.csv -b aligned.b
 #purge_haplotigs clip -p curated.fasta -h curated.haplotigs.fasta -t 10
 ```
 ## Then we further use the output of above script "curated.haplotigs.fasta" to scaffold our final genome "curated.fasta"using ragtag.
-### Script for ragtag
+Script for ragtag
 
 ```
 #!/bin/bash -e
@@ -674,7 +674,7 @@ ragtag.py scaffold curated.haplotigs.fasta curated.fasta
 ```
 
 ## by running script above we got the oupur folder "ragtag_output" with the assembly "ragtag.scaffold.fasta" which we used for repeating the ragtag assembly for better output named as "ragtag2" where the output above is ussed as input for ragtag 2.
-### Script for "ragtag2"
+Script for "ragtag2"
 
 ```
 #!/bin/bash -e
@@ -768,3 +768,76 @@ crw_ont_nanolyse_porechop_nanofilt.fastq.gz | samtools sort -@10 -O BAM -o CRW_A
 
 ```
 
+### 1.2 Blastn hits
+Following the Blobtools manual we blasted our assembly against "nt" database
+Script for blastn
+
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 36
+##SBATCH --qos=debug
+#SBATCH --job-name bl.crw.xaa
+#SBATCH --mem=20G
+##SBATCH --time=00:15:00
+#SBATCH --time=3-00:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load BLAST/2.12.0-GCC-9.2.0
+export BLASTDB='/nesi/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/arks/rascaf/alignment/rascaf/purge_haplotigs/ragtag/ragtag_output/ragtag2/ragtag_output/blobtools/blobtools2/nt'
+
+blastn -db nt \
+        -query ./CRW_assembly.fasta
+        -outfmt "6 qseqid staxids bitscore std" \
+        -max_target_seqs 10 \
+        -max_hsps 1 \
+        -evalue 1e-25 \
+        -num_threads 36 \
+        -out  results/CRW_Assembly.ncbi.blastn.out
+        
+```
+
+### 1.3 Diamond.blastx
+As mentioned earlier we downloaded the uniprot database and formatted them following the instrictions on https://blobtoolkit.genomehubs.org/install/#databases website. Then we blasted our assembly against the uniprot database.
+Script for Diamond.blastx
+
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 10
+##SBATCH --qos=debug
+#SBATCH --job-name dia.xag
+#SBATCH --mem=20G
+##SBATCH --time=00:15:00
+#SBATCH --time=2-00:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load DIAMOND/2.0.6-GCC-9.2.0
+
+
+diamond blastx \
+--query xag \
+--db /nesi/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/arks/rascaf/alignment/rascaf/purge_haplotigs/ragtag/ragtag_output/ragtag2/ragtag_output/blobtools/UniProt/reference_proteomes.dmnd \
+--outfmt 6 qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore \
+--sensitive \
+--max-target-seqs 1 \
+--evalue 1e-25 \
+--threads 10 \
+--memory-limit 100 \
+--out xag.blastx.out
+
+```
