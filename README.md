@@ -1,4 +1,4 @@
-# Sitona obsoletus-assembly-pipeline
+## Sitona obsoletus-assembly-pipeline
 We sequenced the clover root weevil( Sitona obsoletus) using the data from 4 flow cell runs with 4 different individual and the data from all 4 runs were combined and basecalled with the guppy 5 version.
 
 `Script for Guppy 5`
@@ -23,7 +23,7 @@ module load ont-guppy-gpu/5.0.7
 guppy_basecaller -i ../ -s . --flowcell FLO-MIN106 --kit SQK-LSK109 --num_callers 4 -x auto --recursive --trim_barcodes --disable_qscore_filtering
 
 ```
-Along we the merged fastqc files from guppy we also got the sequencing summary.txt file which we process further with pycoQC-2.5.2 which gives the html file in output makes the viewing data for quality easier.
+Along we the merged fastqc files from guppy we also got the sequencing `summary.txt` file which we process further with pycoQC-2.5.2 which gives the html file in output makes the viewing data for quality easier.
 
 `Script for pycoqc`
 
@@ -49,7 +49,7 @@ export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 pycoQC -f ../sequencing_summary.txt -o pycoQC_output.html
 
 ```
-After viwing the quality of our output data via html file we further proceed to remove the reads mapping to the lambda phage genome from our fastq files using Nanolyse. This is because we used DNA CS while running our sample in the minion flow cells. The script for nanolyse id given below;
+After viwing the quality of our output data via html file we further proceed to remove the reads mapping to the lambda phage genome from our fastq files using Nanolyse. This is because we used `DNA CS` while running our sample in the minion flow cells. The script for nanolyse id given below;
 
 `Script for Nanolyse`
 
@@ -84,6 +84,7 @@ GCCATCAGATTGTGTTTGTTAGTCGCTTTTTTTTTTTGGAATTTTTTTTTTGGAATTTTTTTTTTGCGCTAACAACCTCC
 ```
 
 Then we used porechop to remove the adapters from our reads. The scrpit for porechop is given below ;
+
 `Script for Porechop`
 
 ```
@@ -107,7 +108,7 @@ module load Porechop/0.2.4-gimkl-2020a-Python-3.8.2
 porechop -i ../crw_nanopore_filtered.fastq.gz -o crw_ont_nanolyse_porechop.fastq.gz --threads 10
 
 ```
-We used `FLye` to assemble the long read data from Oxford Minion. The script for flye assembly algorithm is given below;
+We used `FLye` to assemble the long read data from Oxford Minion. The script for `flye` assembly algorithm is given below;
 Script for Flye 
 
 ```
@@ -132,7 +133,7 @@ module load Flye/2.9-gimkl-2020a-Python-3.8.2
 flye --nano-hq ../crw_ont_nanolyse_porechop_nanofilt.fastq.gz -o ./Flye -t 10 -i 3 
 
 ```
-This Flye output also includes a main file assembly.fasta which is further used for running the Quast. Quast is usually used to evaluate the assembly quality even without a reference genome. The script of Quast is given below;
+This Flye output also includes a main file `assembly.fasta` which is further used for running the `Quast`. Quast is usually used to evaluate the assembly quality even without a reference genome. The script of `Quast` is given below;
 
 `Script for Quast`
 
@@ -159,10 +160,12 @@ module load QUAST
 quast.py -t 10 --eukaryote --large --conserved-genes-finding --k-mer-stats \
 assembly.fasta \
 -o quastqless 
+
 ```
 By running the above script it yielded a Quast folder wwhich yielded a main file called report.txt.
 The above mentioned report.txt yielded us  the Complete BUSCO percent of 91.42 and partial BUSCO percent of 5.61 with the number of contigs equals to 82815.
 Then we used Purgehaplotigs to remove the haplotigs from our assembly. It helps us to to identify and reassign the duplicate contigs to improve our assembly. The script that we ran is given below;
+
 `Script for Purgehaplotigs`
 
 ```
@@ -199,9 +202,9 @@ purge_haplotigs purge -g assembly.fasta -c coverage_stats.csv -b aligned.bam
 #purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
 
 ```
-This yielded us the file called curated.fasta which we further ran quast on it. This purge haplotigs bring down the contigs number to 51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the RagTag algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for RAgTag is given below;
+This yielded us the file called curated.fasta which we further ran quast on it. This purge haplotigs bring down the contigs number to 51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the `RagTag` algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for `RAgTag` is given below;
 
-Script for `RagTag`
+`Script for RagTag`
 
 ```
 #!/bin/bash -e
@@ -224,14 +227,14 @@ export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 ragtag.py scaffold curated.haplotigs.fasta curated.fasta
 
 ```
-By running above script we got ragtag.scaffold.fasta as our main output and we can check the stats file ( for example ragtag.scaffold.stats) to see  the number of scaffold it removed. Our result is given below;
+By running above script we got `ragtag.scaffold.fasta` as our main output and we can check the stats file ( for example ragtag.scaffold.stats) to see  the number of scaffold it removed. Our result is given below;
 
 ```
 placed_sequences        placed_bp	unplaced_sequences	unplaced_bp     gap_bp  gap_sequences
 15186   629971398	36204   511046512	377200  3772
 ```
 We further ran quast in the output file from ragtag that is ragtag.scaffold.fasta and it further reduced to number of contigs to 47618 with the complete BUSCO percent and partial BUSCO percent to 90.10 and 5.94 respectively.
-## Then we used lrscaff to further scaffold the assembly from ragtag using long reads that is crw_ont_nanolyse_porechop_nanofilt.fasta in our case. The script for lrscaff is given below;
+Then we used `lrscaff` to further scaffold the assembly from ragtag using long reads that is `crw_ont_nanolyse_porechop_nanofilt.fasta` in our case. The script for `lrscaff` is given below;
 
 `Script for LRScaff`
 
@@ -280,9 +283,9 @@ java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.1
 
 ```
 
-We checked the output from the lrscaff from quast and scaffolds5_scaffolds resulted in the reduction in the number of contigs to 26788 with a complete BUSCO percent of 94.72 and partial BUSCO 2.64 percent respectively. 
+We checked the output from the `lrscaff` from quast and `scaffolds5_scaffolds` resulted in the reduction in the number of contigs to 26788 with a complete BUSCO percent of 94.72 and partial BUSCO 2.64 percent respectively. 
 
-We further scaffold our genome usimng long DNA sequences from ONT (crw_ont_nanolyse_porechop_nanofilt.fasta) using RAILS v1.5.1 and Cobbler v0.6.1. Here RAIlS is known as all-in -one scaffolder and gap-filler whereas Cobbler is tool that patch gaps automatically. The script used for this is given below;
+We further scaffold our genome usimng long DNA sequences from ONT `crw_ont_nanolyse_porechop_nanofilt.fasta` using `RAILS v1.5.1` and `Cobbler v0.6.1` Here `RAIlS` is known as all-in -one scaffolder and gap-filler whereas Cobbler is tool that patch gaps automatically. The script used for this is given below;
 
 `Script for RAILS and Cobbler`
 
@@ -312,7 +315,7 @@ sh runRAILSminimapSTREAM.sh scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.f
 /scale_wlg_persistent/filesets/opt_nesi/CS400_centos7_bdw/SAMtools/1.13-GCC-9.2.0/bin/samtools 10
 
 ```
-By running the script given above first we will get the output of cobbler as crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_gapsFill.fa in my case which was further used by RAILS to get the final output as crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.scaffolds.fa at the end. The summary of my RAILS log file is given below;
+By running the script given above first we will get the output of cobbler as `crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_gapsFill.fa` in my case which was further used by `RAILS` to get the final output as `crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.scaffolds.fa` at the end. The summary of my RAILS log file is given below;
 
 ```
 /RAILS Summary ---------------
@@ -327,7 +330,7 @@ Shortest gap resolved (bp) : 6
 crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.log 
 
 ```
-We then ran quast for the output file from the rails. The QUAST report is given below;
+We then ran `Quast` for the output file from the rails. The `QUAST` report is given below;
 
 ```
 Assembly                    crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.scaffolds
@@ -356,7 +359,8 @@ Complete BUSCO (%)          94.06
 Partial BUSCO (%)           2.97
 
 ```
-Then we further used the LRScaff to further boost the contiguity of our assemly using ONT long filetered reads.The script for LRScaff is given below;
+Then we further used the LRScaff to further boost the contiguity of our assemly using ONT long filetered reads.The script for `LRScaff` is given below;
+
 `script for LRScaff`
 
 ```
@@ -382,9 +386,10 @@ export PATH=/nesi/nobackup/uoo02752/bin/LR_Gapcloser/src/:$PATH
 sh LR_Gapcloser.sh -i crw.scaffolds.fasta -l crw_ont_nanolyse_porechop_nanofilt.fasta -s n -t 16 -r 10
 
 ```
-By running above script we got iteration -1 to iteration-10 folders with the common filename gapclosed.fasta in each of them. Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) to 3002.56 from 8276.39   using crw_ont_nanolyse_porechop_nanofilt.fasta for gap filling and increased the partial BUSCO to 3.30 from 2.97 while complete busco and number of contigs the same as previous.
+By running above script we got iteration -1 to iteration-10 folders with the common filename gapclosed.fasta in each of them. Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) to 3002.56 from 8276.39 using `crw_ont_nanolyse_porechop_nanofilt.fasta` for gap filling and increased the partial BUSCO to 3.30 from 2.97 while complete busco and number of contigs the same as previous.
 
-We further scaffold the output (gapclosed.fasta) by our supernova assembly from 10X (scaffold crw.10x.all.pseudo.fasta) ragtag. 
+We further scaffold the output `gapclosed.fasta` by our supernova assembly from 10X `scaffold crw.10x.all.pseudo.fasta` from ragtag. 
+
 `Script for ragtag`
 
 ```
@@ -408,9 +413,9 @@ export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 ragtag.py scaffold crw.10x.all.pseudo.fasta gapclosed.fasta
 
 ```
-By running above script we got ragtag.scaffold.fasta as output file which we further used for scafollding agian using ragtag. We renamed this output as assembly.fasta and also changed the sequence header to make it compatible to use in scaffolding using ragtag. The script for ragtag for second times is same except using assembly.fasta instead of gapclosed.fasta. By running the ragtag script this time we used `ragtag.scaffold.fasta` 
+By running above script we got ragtag.scaffold.fasta as output file which we further used for scafollding agian using `ragtag`. We renamed this output as `assembly.fasta` and also changed the sequence header to make it compatible to use in scaffolding using ragtag. The script for ragtag for second times is same except using `assembly.fasta` instead of `gapclosed.fasta`. By running the ragtag script this time we used `ragtag.scaffold.fasta` 
 
-We further used ARBitR for further merging and scaffolding our current genome assembly from ragtag. As it takes alignment file in the bam/sam format (for example possorted_bam.bam in our case)  with 10X Chromium barcodes when provided with genome fasta file used for mapping, it will sort and merge the provided contigs into scaffolds. Therefore, first we created a reference data ragtag.scaffold.fasta and alignment in the folder id CRW using longranger to be used by the ARBitR. 
+We further used `ARBitR` for further merging and scaffolding our current genome assembly from ragtag. As it takes alignment file in the bam/sam format (for example possorted_bam.bam in our case)  with 10X Chromium barcodes when provided with genome fasta file used for mapping, it will sort and merge the provided contigs into scaffolds. Therefore, first we created a reference data `ragtag.scaffold.fasta` and alignment in the folder id CRW using longranger to be used by the `ARBitR`. 
 
 `Script for longranger`
 
@@ -466,6 +471,7 @@ arbitr.py -i ragtag.scaffold.fasta -o output.arbitr.scaffolds ./CRW/outs/possort
 
 ```
 We further ran arks on the output from the above script.
+
 `Script for arks`
 
 ```
@@ -496,7 +502,7 @@ export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/guppp
 arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
 
 ```
-Then we ran arks version 1.1.0 to scaffold the genome assemblies produced by arbirr using our 10X Chromium Genomics reads. The script is given below;  
+Then we ran `arks`  version 1.1.0 to scaffold the genome assemblies produced by arbirr using our 10X Chromium Genomics reads. 
 
 `Scripts for arks`
 
@@ -530,7 +536,7 @@ export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/guppp
 arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
 
 ```
-Then we used Rascaf to improve the assembly from above using our PE RNA-seq data. This will enable us to imrove our long-range contiguity and order information from intron-spanning RNA-seq read pairs to improve our draft assembly particularly in gene regions. Therefore we imorted merged fq files for Our PE mRNA-seq reads (merge.R1.fq and merge.R2.fq .  Before running the Rascaf we first need to align our RNA-seq reads mapping into our genome using Hisat2. The script for Hisat2  is given below;
+Then we used Rascaf to improve the assembly from above using our PE RNA-seq data. This will enable us to imrove our long-range contiguity and order information from intron-spanning RNA-seq read pairs to improve our draft assembly particularly in gene regions. Therefore we imorted merged fq files for Our PE mRNA-seq reads (`merge.R1.fq` and `merge.R2.fq` .  Before running the Rascaf we first need to align our RNA-seq reads mapping into our genome using `Hisat2`. The script for Hisat2  is given below;
 
 `Script for Hisat2`
 
@@ -556,7 +562,7 @@ module load HISAT2/2.2.1-gimkl-2020a
 module load Python/3.9.5-gimkl-2020a
 module load SAMtools/1.13-GCC-9.2.0
 
-#hisat2-build -p 10 output.arbitr.scaffolds_c4_m50-10000_k100_r0.05_e30000_z1000_l2_a0.9.scaffolds.fa$
+hisat2-build -p 10 output.arbitr.scaffolds_c4_m50-10000_k100_r0.05_e30000_z1000_l2_a0.9.scaffolds.fa$
 
 mkdir alignment
 hisat2 -x hisat2.RNA.crw -1 ./crw-merged-RNAseq/merge.R1.fq -2 ./crw-merged-RNAseq/merge.R2.fq -S ali$
@@ -595,7 +601,7 @@ export PATH=/nesi/nobackup/uoo02752/nematode/bin/rascaf:$PATH
 rascaf-join -r crw_mRNA_scaffold.out -o crw_mRNA_scaffold
 
 ```
-We ran quast on the final assembly produced by rascaf assembly which produced the assembly result as below;
+We ran `quast` on the final assembly produced by rascaf assembly which produced the assembly result as below;
 
 ```
 Assembly                    crw_mRNA_scaffold
@@ -624,7 +630,7 @@ Complete BUSCO (%)          94.06
 Partial BUSCO (%)           2.97             
 
 ```
-We also ran Busco version 5.2.2 using insect dataset which produced the result as follows;
+We also ran `Busco` version 5.2.2 using insect dataset which produced the result as follows;
 
 ```
 BUSCO version is: 5.2.2 
@@ -685,7 +691,7 @@ purge_haplotigs purge -g crw_mRNA_scaffold.fa -c coverage_stats.csv -b aligned.b
 #purge_haplotigs clip -p curated.fasta -h curated.haplotigs.fasta -t 10
 
 ```
-Then we further use the output of above script "curated.haplotigs.fasta" to scaffold our final genome "curated.fasta"using ragtag.
+Then we further use the output of above script `curated.haplotigs.fasta` to scaffold our final genome `curated.fasta` using `ragtag`.
 
 `Script for ragtag`
 
@@ -711,7 +717,7 @@ ragtag.py scaffold curated.haplotigs.fasta curated.fasta
 
 ```
 
-By running script above we got the oupur folder "ragtag_output" with the assembly "ragtag.scaffold.fasta" which we used for repeating the ragtag assembly for better output named as "ragtag2" where the output above is ussed as input for ragtag 2.
+By running script above we got the oupur folder `ragtag_output` with the assembly `ragtag.scaffold.fasta` which we used for repeating the ragtag assembly for better output named as `ragtag2` where the output above is ussed as input for ragtag 2.
 
 `Script for "ragtag2`
 
@@ -737,7 +743,7 @@ ragtag.py scaffold curated.haplotigs.fasta ragtag.scaffold.renamed.fasta
 
 ```
 
-The output assembly obtained by running above script is used as our final assembly "ragtag.scaffold.fasta" was renamed and changes in the header as "CRW_assembly.fasta" and ran BUSCO on it before processing by "blobtools". Blobtools are a modular command-line solution for removing contaminats from associated microorganisms  and other non target organisms by better visualisation, quality control and taxonomic partitioning of genome datasets. This will aid in improving our assemblies by screening of the final assemblies produced from ragtag2 for potential contaminants.
+The output assembly obtained by running above script is used as our final assembly `ragtag.scaffold.fasta` was renamed and changes in the header as `CRW_assembly.fasta` and ran `BUSCO` on it before processing by `blobtools`. `Blobtools`are a modular command-line solution for removing contaminats from associated microorganisms  and other non target organisms by better visualisation, quality control and taxonomic partitioning of genome datasets. This will aid in improving our assemblies by screening of the final assemblies produced from ragtag2 for potential contaminants.
 
 `Script for BUSCO`
 
@@ -763,7 +769,7 @@ export AUGUSTUS_CONFIG_PATH=/nesi/nobackup/uoo02772/bin/MyAugustusConfig
 busco --in ../CRW_assembly.fasta  --out Busco -c 16 -m genome -l insecta_odb10
 
 ```
-Running the script above we got the busco version 5.2.2  on insect data base we got output as
+Running the script above we got the `busco version 5.2.2`  on insect data base we got output as
 
 ```
 C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367       
@@ -776,11 +782,12 @@ C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367
         ```
         The duplicate busco was reduced from 20 % to 8.2%.
 ```
-1. BlobTools which is a reimplementation of BlobTools written in Python 3. First we intall the BlobTools2 and its dependencies and then fetch the nt database and UniProt database  and formattt it as per the Blobtools requiremnts. For formatting the UniProt databases we downloaded the NCBI taxdump and then uncompressed in asister directory in afew steps. We also have to fetch the BUSCO lineages that we plan to use such as eukaryota or insecta. For this we followed [this](https://blobtoolkit.genomehubs.org/install/). The steps of actions we follwed are given below;
+1. `BlobTools` which is a reimplementation of BlobTools written in Python 3. First we intall the BlobTools2 and its dependencies and then fetch the nt database and UniProt database  and formattt it as per the Blobtools requiremnts. For formatting the UniProt databases we downloaded the NCBI taxdump and then uncompressed in asister directory in afew steps. We also have to fetch the BUSCO lineages that we plan to use such as eukaryota or insecta. For this we followed [this](https://blobtoolkit.genomehubs.org/install/). The steps of actions we follwed are given below;
 ## 1. BlobTools2
 ### 1.1 Coverage
-By mapping the ont long reads to our final assembly we got coverage data as "bam file".
-Script for Coverage
+By mapping the ont long reads to our final assembly we got coverage data as `bam file`.
+
+`Script for Coverage`
 
 ```
 #!/bin/bash -e
@@ -809,8 +816,9 @@ crw_ont_nanolyse_porechop_nanofilt.fastq.gz | samtools sort -@10 -O BAM -o CRW_A
 ```
 
 ### 1.2 Blastn hits
-Following the Blobtools manual we blasted our assembly against "nt" database
-Script for blastn
+Following the Blobtools manual we blasted our assembly against `nt` database
+
+`Script for blastn`
 
 ```
 #!/bin/bash -e
@@ -846,7 +854,8 @@ blastn -db nt \
 
 ### 1.3 Diamond.blastx
 As mentioned earlier we downloaded the uniprot database and formatted them following the instrictions [here](https://blobtoolkit.genomehubs.org/install/#databases) website. Then we blasted our assembly against the uniprot database.
-Script for Diamond.blastx
+
+`Script for Diamond.blastx`
 
 ```
 #!/bin/bash -e
@@ -941,4 +950,4 @@ CRW_Assembly
 --output ./filter.mincov5.minlen1000.invert \
 CRW_Assembly
 ```
-output is `somethin`
+
