@@ -805,7 +805,7 @@ blastn -db nt \
 ```
 
 ### 1.3 Diamond.blastx
-As mentioned earlier we downloaded the uniprot database and formatted them following the instrictions on https://blobtoolkit.genomehubs.org/install/#databases website. Then we blasted our assembly against the uniprot database.
+As mentioned earlier we downloaded the uniprot database and formatted them following the instrictions [here](https://blobtoolkit.genomehubs.org/install/#databases) website. Then we blasted our assembly against the uniprot database.
 Script for Diamond.blastx
 
 ```
