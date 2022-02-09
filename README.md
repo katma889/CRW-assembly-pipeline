@@ -1019,9 +1019,15 @@ module load Bowtie2/2.4.1-GCC-9.2.0
 module load SAMtools/1.12-GCC-9.2.0
 module load Python/3.9.5-gimkl-2020a
 module load Pilon/1.24-Java-15.0.2
-
+#First we mapped the sequences to assembly using bowtie 
 bowtie2-build ragtag.scaffold.fasta crw
 bowtie2 -p 16 --local -x crw -1 NT4_10_8_17_1.trimmed.fastq.gz -2 NT4_10_8_17_2.trimmed.fastq.gz | samtools sort > crw_assembly.fasta.bam
 samtools index crw_assembly.fasta.bam crw_assembly.fasta.bai
 
+#Then we ran Pilon in second step
+java -Xmx180G -jar $EBROOTPILON/pilon.jar --genome path/to/assembly/from/ragtag/above/CRW_assembly.fasta \
+              --frags CRW_assembly.fasta.bam --fix snps,indels \
+              --output path/to/output/CRW_assembly.pilon \
+              --gapmargin 1 --mingap 10000000 --threads 10 --verbose --changes \
+              2>Pilon.stderr.txt 1>Pilon.stdout.txt
 ```
