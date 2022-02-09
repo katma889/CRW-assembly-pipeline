@@ -961,8 +961,8 @@ CRW_Assembly
 By running above script we got our output as
 1. Filtered assembly `CRW_Assembly.filtered.fasta` stored in path/to/output/folder/filter
 2. Inverse filtered file `CRW_Assembly.filtered.inverse.fasta` stored in path/to/output/folder/filter.inverse
-3. 
-Then we used `RAgTag` to scaffold our assembly `CRW_Assembly.filtered.fasta` using `CRW_Assembly.filtered.inverse.fasta`
+
+### 1.5 Then we used `RAgTag` to scaffold our assembly `CRW_Assembly.filtered.fasta` using `CRW_Assembly.filtered.inverse.fasta`
 
 `Script for RagTag`
 
@@ -987,3 +987,13 @@ export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 ragtag.py scaffold CRW_assembly.invert.minl1000.covmin5.fasta CRW_assembly.filtered.fasta
 
 ```
+Altogether we ran RagTag four times in a series (one after another) as taking the output from earlier ragtag assembly as input for the next one along with CRW_Assembly.filtered.inverse.fasta as input until the fourth run. We also used the oneliner (given below) to rename the sequence header on the ragtag output fasta file.
+
+```
+awk '/^>/{print ">Scaff_" ++i; next}{print}' Ragtag_assembly.fasta > Ragtag_assembly_header_renamed.fasta
+
+```
+### 1.6 Pilon
+This is the final step in our assembly where we used the Illumina short read data to polish our assembly using `Pilon`. We ran this on two iterations to maximize the quality of the output.
+
+`Script for Pilon`
