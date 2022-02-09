@@ -998,3 +998,30 @@ awk '/^>/{print ">Scaff_" ++i; next}{print}' Ragtag_assembly.fasta > Ragtag_asse
 This is the final step in our assembly where we used the Illumina short read data to polish our assembly using `Pilon`. We ran this on two iterations to maximize the quality of the output.
 
 `Script for Pilon`
+
+```
+#!/bin/bash -e
+
+#SBATCH --nodes 1
+#SBATCH --cpus-per-task 1
+#SBATCH --ntasks 16
+#SBATCH --job-name pilon_crw
+#SBATCH --mem=50G
+#SBATCH --time=30:00:00
+#SBATCH --account=uoo02772
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=katma889@student.otago.ac.nz
+#SBATCH --hint=nomultithread
+
+module load Bowtie2/2.4.1-GCC-9.2.0
+module load SAMtools/1.12-GCC-9.2.0
+module load Python/3.9.5-gimkl-2020a
+module load Pilon/1.24-Java-15.0.2
+
+bowtie2-build ragtag.scaffold.fasta crw
+bowtie2 -p 16 --local -x crw -1 NT4_10_8_17_1.trimmed.fastq.gz -2 NT4_10_8_17_2.trimmed.fastq.gz | samtools sort > crw_assembly.fasta.bam
+samtools index crw_assembly.fasta.bam crw_assembly.fasta.bai
+
+```
