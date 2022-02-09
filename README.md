@@ -45,7 +45,7 @@ Along we the merged fastqc files from guppy we also got the sequencing `summary.
 #SBATCH --mail-user=bhaup057@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
-export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
+export PATH="/nesi/nobackup/path/to/bin/miniconda3/bin:$PATH"
 
 pycoQC -f ../sequencing_summary.txt -o pycoQC_output.html
 
@@ -110,6 +110,7 @@ porechop -i ../crw_nanopore_filtered.fastq.gz -o crw_ont_nanolyse_porechop.fastq
 
 ```
 We used `FLye` to assemble the long read data from Oxford Minion. The script for `flye` assembly algorithm is given below;
+
 Script for Flye 
 
 ```
@@ -163,9 +164,9 @@ assembly.fasta \
 -o quastqless 
 
 ```
-By running the above script it yielded a Quast folder wwhich yielded a main file called report.txt.
+By running the above script it yielded a `Quast` folder wwhich yielded a main file called report.txt.
 The above mentioned report.txt yielded us  the Complete BUSCO percent of 91.42 and partial BUSCO percent of 5.61 with the number of contigs equals to 82815.
-Then we used Purgehaplotigs to remove the haplotigs from our assembly. It helps us to to identify and reassign the duplicate contigs to improve our assembly. The script that we ran is given below;
+Then we used `Purgehaplotigs` to remove the haplotigs from our assembly. It helps us to to identify and reassign the duplicate contigs to improve our assembly. The script that we ran is given below;
 
 `Script for Purgehaplotigs`
 
@@ -203,7 +204,7 @@ purge_haplotigs purge -g assembly.fasta -c coverage_stats.csv -b aligned.bam
 #purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
 
 ```
-This yielded us the file called curated.fasta which we further ran quast on it. This purge haplotigs bring down the contigs number to 51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the `RagTag` algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for `RAgTag` is given below;
+This yielded us the file called `curated.fasta` which we further ran quast on it. This `purge haplotigs` bring down the contigs number to 51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the `RagTag` algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for `RAgTag` is given below;
 
 `Script for RagTag`
 
@@ -234,7 +235,7 @@ By running above script we got `ragtag.scaffold.fasta` as our main output and we
 placed_sequences        placed_bp	unplaced_sequences	unplaced_bp     gap_bp  gap_sequences
 15186   629971398	36204   511046512	377200  3772
 ```
-We further ran quast in the output file from ragtag that is ragtag.scaffold.fasta and it further reduced to number of contigs to 47618 with the complete BUSCO percent and partial BUSCO percent to 90.10 and 5.94 respectively.
+We further ran quast in the output file from ragtag that is `ragtag.scaffold.fasta` and it further reduced to number of contigs to 47618 with the complete BUSCO percent and partial BUSCO percent to 90.10 and 5.94 respectively.
 Then we used `lrscaff` to further scaffold the assembly from ragtag using long reads that is `crw_ont_nanolyse_porechop_nanofilt.fasta` in our case. The script for `lrscaff` is given below;
 
 `Script for LRScaff`
@@ -537,7 +538,7 @@ export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/guppp
 arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
 
 ```
-Then we used `Rascaf`to improve the assembly from above using our PE RNA-seq data. This will enable us to imrove our long-range contiguity and order information from intron-spanning RNA-seq read pairs to improve our draft assembly particularly in gene regions. Therefore we imorted merged fq files for Our PE mRNA-seq reads (`merge.R1.fq` and `merge.R2.fq` .  Before running the `Rascaf` we first need to align our RNA-seq reads mapping into our genome using `Hisat2`. The script for Hisat2  is given below;
+Then we used `Rascaf`to improve the assembly from above using our PE RNA-seq data. This will enable us to imrove our long-range contiguity and order information from intron-spanning RNA-seq read pairs to improve our draft assembly particularly in gene regions. Therefore we imorted merged fq files for Our PE mRNA-seq reads (`merge.R1.fq` and `merge.R2.fq` . Before running the `Rascaf` we first need to align our RNA-seq reads mapping into our genome using `Hisat2`. 
 
 `Script for Hisat2`
 
@@ -571,7 +572,7 @@ samtools view -bS alignment/crw_mRNA_alignment.sam > alignment/crw_mRNA_alignmen
 samtools sort alignment/crw_mRNA_alignment.bam -o alignment/crw_mRNA_alignment_sorted.bam
 
 ```
-This prodiced us the result in SAM file which is then converted to BAM which is further converted into sorted BAM as the final output to be use in our further assembly process using Rescaf.
+This prodiced us the result in `SAM` file which is then converted to `BAM` which is further converted into `sorted BAM` as the final output to be use in our further assembly process using Rescaf.
 
 `Script for rascaf`
 
@@ -655,7 +656,7 @@ Dependencies and versions:
         metaeuk: GITDIR-NOTFOUND
 ```
 
-After finalising our raw assembly the next step is we re-ran purge-haplotigs using the scripts beow;
+After finalising our raw assembly the next step is we re-ran `purge-haplotigs` using the scripts beow;
 
 `Script for purge-haplotigs`
 
@@ -745,7 +746,7 @@ ragtag.py scaffold curated.haplotigs.fasta ragtag.scaffold.renamed.fasta
 
 ```
 
-The output assembly obtained by running above script is used as our final assembly `ragtag.scaffold.fasta` was renamed and changes in the header as `CRW_assembly.fasta` and ran `BUSCO` on it before processing by `blobtools`. `Blobtools`are a modular command-line solution for removing contaminats from associated microorganisms  and other non target organisms by better visualisation, quality control and taxonomic partitioning of genome datasets. This will aid in improving our assemblies by screening of the final assemblies produced from ragtag2 for potential contaminants.
+The output assembly obtained by running above script is used as our final assembly `ragtag.scaffold.fasta` was renamed and changes in the header as `CRW_assembly.fasta` and ran `BUSCO` on it before processing by `blobtools`. `Blobtools`are a modular command-line solution for removing contaminats from associated microorganisms  and other non target organisms by better visualisation, quality control and taxonomic partitioning of genome datasets. This will aid in improving our assemblies by screening of the final assemblies produced from `ragtag2` for potential contaminants.
 
 `Script for BUSCO`
 
@@ -787,6 +788,7 @@ C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367
 1. `BlobTools` which is a reimplementation of BlobTools written in Python 3. First we intall the BlobTools2 and its dependencies and then fetch the nt database and UniProt database  and formattt it as per the Blobtools requiremnts. For formatting the UniProt databases we downloaded the NCBI taxdump and then uncompressed in asister directory in afew steps. We also have to fetch the BUSCO lineages that we plan to use such as eukaryota or insecta. For this we followed [this](https://blobtoolkit.genomehubs.org/install/). The steps of actions we follwed are given below;
 ## 1. BlobTools2
 ### 1.1 Coverage
+
 By mapping the ont long reads to our final assembly we got coverage data as `bam file`.
 
 `Script for Coverage`
@@ -818,7 +820,8 @@ crw_ont_nanolyse_porechop_nanofilt.fastq.gz | samtools sort -@10 -O BAM -o CRW_A
 ```
 
 ### 1.2 Blastn hits
-Following the Blobtools manual we blasted our assembly against `nt` database
+
+Following the `Blobtools` manual we blasted our assembly against `nt` database
 
 `Script for blastn`
 
@@ -893,7 +896,7 @@ diamond blastx \
 
 ```
 ## 1.4 Database
-Blobdatabase folder was created and then we added the results from blastn, diamond.blastx and coverage information in that folder. We download taxdump dataset as described [here](https://blobtoolkit.genomehubs.org/install/#databases) and then created a textfile named `CRW_assembly.yaml` which is included in the script below
+Blobdatabase folder was created and then we added the results from blastn, `diamond.blastx` and coverage information in that folder. We download `taxdump` dataset as described [here](https://blobtoolkit.genomehubs.org/install/#databases) and then created a textfile named `CRW_assembly.yaml` which is included in the script below
 
 
 ```
