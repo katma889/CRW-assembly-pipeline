@@ -1024,7 +1024,7 @@ bowtie2-build ragtag.scaffold.fasta crw
 bowtie2 -p 16 --local -x crw -1 NT4_10_8_17_1.trimmed.fastq.gz -2 NT4_10_8_17_2.trimmed.fastq.gz | samtools sort > crw_assembly.fasta.bam
 samtools index crw_assembly.fasta.bam crw_assembly.fasta.bai
 
-#Then we ran Pilon in second step
+#Then we ran Pilon in second step to get our final assembly
 java -Xmx180G -jar $EBROOTPILON/pilon.jar --genome path/to/assembly/from/ragtag/above/CRW_assembly.fasta \
               --frags CRW_assembly.fasta.bam --fix snps,indels \
               --output path/to/output/CRW_assembly.pilon \
