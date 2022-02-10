@@ -1006,7 +1006,7 @@ This is the final step in our assembly where we used the Illumina short read dat
 #SBATCH --cpus-per-task 1
 #SBATCH --ntasks 16
 #SBATCH --job-name pilon_crw
-#SBATCH --mem=50G
+#SBATCH --mem=200G
 #SBATCH --time=30:00:00
 #SBATCH --account=uoo02772
 #SBATCH --output=%x_%j.out
@@ -1015,19 +1015,15 @@ This is the final step in our assembly where we used the Illumina short read dat
 #SBATCH --mail-user=katma889@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
-module load Bowtie2/2.4.1-GCC-9.2.0
+module load BWA/0.7.17-gimkl-2017a
 module load SAMtools/1.12-GCC-9.2.0
 module load Python/3.9.5-gimkl-2020a
 module load Pilon/1.24-Java-15.0.2
-#First we mapped the sequences to assembly using bowtie 
-bowtie2-build ragtag.scaffold.fasta crw
-bowtie2 -p 16 --local -x crw -1 NT4_10_8_17_1.trimmed.fastq.gz -2 NT4_10_8_17_2.trimmed.fastq.gz | samtools sort > crw_assembly.fasta.bam
-samtools index crw_assembly.fasta.bam crw_assembly.fasta.bai
 
-#Then we ran Pilon in second step to get our final assembly
-java -Xmx180G -jar $EBROOTPILON/pilon.jar --genome path/to/assembly/from/ragtag/above/CRW_assembly.fasta \
-              --frags CRW_assembly.fasta.bam --fix snps,indels \
-              --output path/to/output/CRW_assembly.pilon \
-              --gapmargin 1 --mingap 10000000 --threads 10 --verbose --changes \
-              2>Pilon.stderr.txt 1>Pilon.stdout.txt
+#bwa index ragtag.scaffold.fasta
+#bwa mem -t 14 ragtag.scaffold.fasta ./NT4_10_8_17_1.trimmed.fastq.gz ./NT4_10_8_17_2.trimmed.fastq.gz | samtools view - -Sb |samtools sort - -@14 -o ./mapping.sorted.bam
+#samtools index mapping.sorted.bam
+
+java -Xmx200G -jar $EBROOTPILON/pilon.jar --genome ragtag.scaffold.fasta --fix all --changes --frags mapping.sorted.bam --threads 16 --output CRW_assembly.pilon.1 | tee Pilon.Rnd1.pilon
+
 ```
