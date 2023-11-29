@@ -1,6 +1,6 @@
 ## Sitona obsoletus-whole genome assembly-pipeline
 
-The repository contains all the scripts that I used for assembling the genome of the clover root weevil( Sitona obsoletus) using data from a combination of long read nanopore, 10x genomics and Illumina sequencing technology. The long read assembly from nanopore MinION was used as a primary assembly which is then sccafolded and gap closed using short reads Illumina and 10x linked reads. Schematic representation of my assembly pipeline is given below;
+The repository contains all the scripts that I used for assembling the genome of the clover root weevil( Sitona obsoletus) using data from a combination of long read nanopore, 10x genomics and Illumina sequencing technology. The long read assembly from nanopore MinION was used as a primary assembly which is then sccafolded and gap closed using short Illumina reads and 10x linked reads. Schematic representation of my assembly pipeline is given below;
 
 ![plot](./assembly_pipeline.png)
 
@@ -27,7 +27,7 @@ module load ont-guppy-gpu/5.0.7
 guppy_basecaller -i ../ -s . --flowcell FLO-MIN106 --kit SQK-LSK109 --num_callers 4 -x auto --recursive --trim_barcodes --disable_qscore_filtering
 
 ```
-Along we the merged fastqc files from guppy we also got the sequencing `summary.txt` file which we process further with pycoQC-2.5.2 which gives the html file in output makes the viewing data for quality easier.
+Along we the merged fastqc files from guppy we also got the sequencing `summary.txt` file as an input which we process further with pycoQC-2.5.2 to check the quality of our data. It resulted in an interactive html file with details of data quality.
 
 `Script for pycoqc`
 
@@ -45,7 +45,7 @@ Along we the merged fastqc files from guppy we also got the sequencing `summary.
 #SBATCH --output=%x.%j.out
 #SBATCH --error=%x.%j.err
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=bhaup057@student.otago.ac.nz
+#SBATCH --mail-user=katma889@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
 export PATH="/nesi/nobackup/path/to/bin/miniconda3/bin:$PATH"
@@ -53,7 +53,7 @@ export PATH="/nesi/nobackup/path/to/bin/miniconda3/bin:$PATH"
 pycoQC -f ../sequencing_summary.txt -o pycoQC_output.html
 
 ```
-After viwing the quality of our output data via html file we further proceed to remove the reads mapping to the lambda phage genome from our fastq files using Nanolyse. This is because we used `DNA CS` while running our sample in the minion flow cells. The script for nanolyse id given below;
+After viwing the quality of our output data via html file we further proceed to remove the reads mapping to the lambda phage genome from our fastq files using Nanolyse. This is because we used `DNA CS` while running our sample in the minion flow cells. The script for nanolyse is given below which was used to remove lambda DNA from our fastq files.
 
 `Script for Nanolyse`
 
@@ -71,7 +71,7 @@ After viwing the quality of our output data via html file we further proceed to 
 #SBATCH --output=%x.%j.out
 #SBATCH --error=%x.%j.err
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=bhaup057@student.otago.ac.nz
+#SBATCH --mail-user=katma889@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
 export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
@@ -87,7 +87,7 @@ GCCATCAGATTGTGTTTGTTAGTCGCTTTTTTTTTTTGGAATTTTTTTTTTGGAATTTTTTTTTTGCGCTAACAACCTCC
 
 ```
 
-Then we used porechop to remove the adapters from our reads. The scrpit for porechop is given below ;
+As basecalling with Guppy only resulted in removal of adapters attached to the end of the reads. Therefore,   porechop was used to remove any remaining adapters  present in the middle of our reads. The scrpit for porechop is given below ;
 
 `Script for Porechop`
 
