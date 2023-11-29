@@ -4,6 +4,10 @@ The repository contains all the scripts that I used for the assembling the genom
 
 4 flow cell runs with 4 different individual and the data from all 4 runs were combined and basecalled with the guppy 5 version.
 
+
+![plot](./assembly_pipeline.png)
+
+
 `Script for Guppy 5`
 
 ```
