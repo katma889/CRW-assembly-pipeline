@@ -1,6 +1,8 @@
-## Sitona obsoletus-assembly-pipeline
+## Sitona obsoletus-whole genome assembly-pipeline
 
-We sequenced the clover root weevil( Sitona obsoletus) using the data from 4 flow cell runs with 4 different individual and the data from all 4 runs were combined and basecalled with the guppy 5 version.
+The repository contains all the scripts that I used for the assembling the genome of the clover root weevil( Sitona obsoletus) using the data from a combination of long read nanopore, 10x genomics and Illumina sequencing technology. The long read assembly from nanopore MinION was used as a primary assembly which is then sccafolded and gap closed using short reads Illumina and 10x linked reads. 
+
+4 flow cell runs with 4 different individual and the data from all 4 runs were combined and basecalled with the guppy 5 version.
 
 `Script for Guppy 5`
 
