@@ -112,7 +112,7 @@ module load Porechop/0.2.4-gimkl-2020a-Python-3.8.2
 porechop -i ../crw_nanopore_filtered.fastq.gz -o crw_ont_nanolyse_porechop.fastq.gz --threads 10
 
 ```
-We used `FLye` to assemble the long read data from Oxford Minion. The script for `flye` assembly algorithm is given below;
+Among different assemblers that were tried for assefor Nanopore Long reads,`FLye` gave the best assembly, Therefore We used `FLye`2.9 version to assemble the long read data from Oxford Minion. The script for `flye` assembly algorithm is given below;
 
 Script for Flye 
 
@@ -382,7 +382,7 @@ Then we further used the LRScaff to further boost the contiguity of our assemly 
 #SBATCH --output=%x_%j.out
 #SBATCH --error=%x_%j.err
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=bhaup057@student.otago.ac.nz
+#SBATCH --mail-user=katma889@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
 module load BWA/0.7.17-gimkl-2017a
@@ -501,7 +501,7 @@ module load BWA/0.7.17-GCC-9.2.0
 module load SAMtools/1.13-GCC-9.2.0
 module load BEDTools/2.29.2-GCC-9.2.0
 module load LINKS/1.8.7-GCC-9.2.0
-export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/gupppy.5/pycoqc/nanolyse/porechop/nanoqc/flye/M.neg_flye/purgehaplotigs/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/lrgapcloser/Output/rails.cobler/ragtag/ragtag_output/arbitr/arbitr.default/arbitr.2/arcs.links/arks-1.0.4/Examples:$PATH
+export PATH=/nesi/nobackup/uoo02752/CRW/CRW_nanopore/0.all_fast5/gupppy.5/pycoqc/nanolyse/porechop/nanoqc/flye/crw_flye/purgehaplotigs/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/lrgapcloser/Output/rails.cobler/ragtag/ragtag_output/arbitr/arbitr.default/arbitr.2/arcs.links/arks-1.0.4/Examples:$PATH
 export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/gupppy.5/pycoqc/nanolyse/porechop/nanoqc/flye/M.neg_flye/purgehaplotigs/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/lrgapcloser/Output/rails.cobler/ragtag/ragtag_output/arbitr/arbitr.default/arbitr.2/arcs.links/arks-1.0.4/Arks:$PATH
 
 arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
@@ -575,7 +575,7 @@ samtools view -bS alignment/crw_mRNA_alignment.sam > alignment/crw_mRNA_alignmen
 samtools sort alignment/crw_mRNA_alignment.bam -o alignment/crw_mRNA_alignment_sorted.bam
 
 ```
-This prodiced us the result in `SAM` file which is then converted to `BAM` which is further converted into `sorted BAM` as the final output to be use in our further assembly process using Rescaf.
+This gave us the result in `SAM` file which is then converted to `BAM` which is further converted into `sorted BAM` as the final output to be use in our further assembly process using Rescaf.
 
 `Script for rascaf`
 
@@ -811,7 +811,7 @@ By mapping the ont long reads to our final assembly we got coverage data as `bam
 #SBATCH --output=%x_%j.out
 #SBATCH --error=%x_%j.err
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=bhaup057@student.otago.ac.nz
+#SBATCH --mail-user=katma889@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
 module load minimap2/2.18-GCC-9.2.0
