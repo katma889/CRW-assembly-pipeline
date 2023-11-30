@@ -1,4 +1,4 @@
-## Sitona obsoletus-whole genome assembly-pipeline
+## Sitona obsoletus- whole genome assembly-pipeline
 
 The repository contains all the scripts that I used for assembling the genome of the clover root weevil( Sitona obsoletus) using data from a combination of long read nanopore, 10x genomics and Illumina sequencing technology. The long read assembly from nanopore MinION was used as a primary assembly which is then sccafolded and gap closed using short Illumina reads and 10x linked reads. Schematic representation of my assembly pipeline is given below;
 
@@ -27,7 +27,7 @@ module load ont-guppy-gpu/5.0.7
 guppy_basecaller -i ../ -s . --flowcell FLO-MIN106 --kit SQK-LSK109 --num_callers 4 -x auto --recursive --trim_barcodes --disable_qscore_filtering
 
 ```
-Along we the merged fastqc files from guppy we also got the sequencing `summary.txt` file as an input which we process further with pycoQC-2.5.2 to check the quality of our data. It resulted in an interactive html file with details of data quality.
+Guppy provided us with the merged fastqc files along with the sequencing `summary.txt` file as an input which we process further with pycoQC-2.5.2 to check the quality of our data. It resulted in an interactive html file with details of data quality.
 
 `Script for pycoqc`
 
@@ -53,7 +53,7 @@ export PATH="/nesi/nobackup/path/to/bin/miniconda3/bin:$PATH"
 pycoQC -f ../sequencing_summary.txt -o pycoQC_output.html
 
 ```
-After viwing the quality of our output data via html file we further proceed to remove the reads mapping to the lambda phage genome from our fastq files using Nanolyse. This is because we used `DNA CS` while running our sample in the minion flow cells. The script for nanolyse is given below which was used to remove lambda DNA from our fastq files.
+After viwing the quality of our output data via html file we further proceed to remove the reads mapping to the lambda phage genome from our fastq files using 'Nanolyse'. This is because we used `DNA CS` while running our sample in the minion flow cells. The script for 'Nanolyse' is given below which was used to remove lambda DNA from our fastq files.
 
 `Script for Nanolyse`
 
@@ -87,7 +87,7 @@ GCCATCAGATTGTGTTTGTTAGTCGCTTTTTTTTTTTGGAATTTTTTTTTTGGAATTTTTTTTTTGCGCTAACAACCTCC
 
 ```
 
-As basecalling with Guppy only resulted in removal of adapters attached to the end of the reads. Therefore,   porechop was used to remove any remaining adapters  present in the middle of our reads. The scrpit for porechop is given below ;
+As basecalling with Guppy only resulted in removal of adapters attached to the end of the reads. Therefore, 'Porechop' was used to remove any remaining adapters present in the middle of our reads. The scrpit for 'Porechop' is given below;
 
 `Script for Porechop`
 
@@ -138,7 +138,7 @@ module load Flye/2.9-gimkl-2020a-Python-3.8.2
 flye --nano-hq ../crw_ont_nanolyse_porechop_nanofilt.fastq.gz -o ./Flye -t 10 -i 3 
 
 ```
-This Flye output also includes a main file `assembly.fasta` which is further used for running the `Quast`. Quast is usually used to evaluate the assembly quality even without a reference genome. The script of `Quast` is given below;
+This Flye output also includes a main file `assembly.fasta` which was further used for running the `Quast`. Quast is usually used to evaluate the assembly quality even in the absence of a reference genome. The script of `Quast` is given below;
 
 `Script for Quast`
 
@@ -167,8 +167,8 @@ assembly.fasta \
 -o quastqless 
 
 ```
-By running the above script it yielded a `Quast` folder wwhich yielded a main file called report.txt.
-The above mentioned report.txt yielded us  the Complete BUSCO percent of 91.42 and partial BUSCO percent of 5.61 with the number of contigs equals to 82815.
+By running the above script it yielded a `Quast` folder wwhich yielded a main file called 'report.txt'.
+The above mentioned 'report.txt' yielded us  the Complete BUSCO and partial BUSCO percentage and also the number of contigs along with other assembly statistics.
 Then we used `Purgehaplotigs` to remove the haplotigs from our assembly. It helps us to to identify and reassign the duplicate contigs to improve our assembly. The script that we ran is given below;
 
 `Script for Purgehaplotigs`
@@ -207,7 +207,7 @@ purge_haplotigs purge -g assembly.fasta -c coverage_stats.csv -b aligned.bam
 #purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
 
 ```
-This yielded us the file called `curated.fasta` which we further ran quast on it. This `purge haplotigs` bring down the contigs number to 51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the `RagTag` algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for `RAgTag` is given below;
+This yielded us the file called `curated.fasta` which we further ran quast on it. This `purge haplotigs` bring down the contigs number to -51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the `RagTag` algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for `RAgTag` is given below;
 
 `Script for RagTag`
 
@@ -604,62 +604,25 @@ export PATH=/nesi/nobackup/uoo02752/nematode/bin/rascaf:$PATH
 #        -o crw_mRNA_scaffold
 
 rascaf-join -r crw_mRNA_scaffold.out -o crw_mRNA_scaffold
+      
 
 ```
-We ran `quast` on the final assembly produced by rascaf assembly which produced the assembly result as below;
+We ran 'Quast' and then `Busco` version 5.2.2 using insect dataset to evaluate the assembly quality.
 
 ```
-Assembly                    crw_mRNA_scaffold
-# contigs (>= 0 bp)         24773            
-# contigs (>= 1000 bp)      21366            
-# contigs (>= 5000 bp)      13845            
-# contigs (>= 10000 bp)     11837            
-# contigs (>= 25000 bp)     9455             
-# contigs (>= 50000 bp)     7321             
-Total length (>= 0 bp)      1506904542       
-Total length (>= 1000 bp)   1504595759       
-Total length (>= 5000 bp)   1486843969       
-Total length (>= 10000 bp)  1472447678       
-Total length (>= 25000 bp)  1433237665       
-Total length (>= 50000 bp)  1355275123       
-# contigs                   15864            
-Largest contig              5307789          
-Total length                1494691782       
-GC (%)                      31.84            
-N50                         216456           
-N75                         113389           
-L50                         1980             
-L75                         4353             
-# N's per 100 kbp           3006.78          
-Complete BUSCO (%)          94.06            
-Partial BUSCO (%)           2.97             
-
-```
-We also ran `Busco` version 5.2.2 using insect dataset which produced the result as follows;
-
-```
-BUSCO version is: 5.2.2 
+BUSCO version 5.2.2 
 # The lineage dataset is: insecta_odb10 (Creation date: 2020-09-10, number of genomes: 75, number of BUSCOs: 1367)
 # Summarized benchmarking in BUSCO notation for file /scale_wlg_nobackup/filesets/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/arks/rascaf/alignment/rascaf/crw_mRNA_scaffold.fa
 # BUSCO was run in mode: genome
 # Gene predictor used: metaeuk
 
-        ***** Results: *****
-
-        C:95.5%[S:75.1%,D:20.4%],F:2.9%,M:1.6%,n:1367      
-        1305    Complete BUSCOs (C)                        
-        1026    Complete and single-copy BUSCOs (S)        
-        279     Complete and duplicated BUSCOs (D)         
-        40      Fragmented BUSCOs (F)                      
-        22      Missing BUSCOs (M)                         
-        1367    Total BUSCO groups searched                
-
+                     
 Dependencies and versions:
         hmmsearch: 3.3
         metaeuk: GITDIR-NOTFOUND
 ```
 
-After finalising our raw assembly the next step is we re-ran `purge-haplotigs` using the scripts beow;
+After finalising our raw assembly the next step is to re-ran `purge-haplotigs` using the scripts beow;
 
 `Script for purge-haplotigs`
 
@@ -774,21 +737,9 @@ cp -r $AUGUSTUS_CONFIG_PATH /nesi/nobackup/uoo02772/bin/MyAugustusConfig
 export AUGUSTUS_CONFIG_PATH=/nesi/nobackup/uoo02772/bin/MyAugustusConfig
 busco --in ../CRW_assembly.fasta  --out Busco -c 16 -m genome -l insecta_odb10
 
-```
-Running the script above we got the `busco version 5.2.2`  on insect data base we got output as
 
-```
-C:94.4%[S:86.2%,D:8.2%],F:3.0%,M:2.6%,n:1367       
-        1291    Complete BUSCOs (C)                        
-        1179    Complete and single-copy BUSCOs (S)        
-        112     Complete and duplicated BUSCOs (D)         
-        41      Fragmented BUSCOs (F)                      
-        35      Missing BUSCOs (M)                         
-        1367    Total BUSCO groups searched   
-        ```
-        The duplicate busco was reduced from 20 % to 8.2%.
-```
-1. `BlobTools` which is a reimplementation of BlobTools written in Python 3. First we intall the BlobTools2 and its dependencies and then fetch the nt database and UniProt database  and formattt it as per the Blobtools requiremnts. For formatting the UniProt databases we downloaded the NCBI taxdump and then uncompressed in asister directory in afew steps. We also have to fetch the BUSCO lineages that we plan to use such as eukaryota or insecta. For this we followed [this](https://blobtoolkit.genomehubs.org/install/). The steps of actions we follwed are given below;
+1. `BlobTools`
+we intalled the 'BlobTools2' and its dependencies and then fetch the 'nt database' and 'UniProt database'  and formattted it as per the 'Blobtools' requiremnts. For formatting the UniProt databases we downloaded the 'NCBI taxdump' and then uncompressed in a sister directory in a few steps. We also have to fetch the BUSCO lineages that we plan to use such as eukaryota or insecta. For this we followed [this](https://blobtoolkit.genomehubs.org/install/). The steps of actions we follwed are given below;
 ## 1. BlobTools2
 ### 1.1 Coverage
 
