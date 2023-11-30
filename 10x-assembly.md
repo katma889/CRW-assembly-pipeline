@@ -27,7 +27,8 @@ supernova run --id=crw_10xSN \
               --fastqs=/path/to/linked-read/fastq/files 
              
 ```
-Upon completing the assembly which resulted in fasta file was produced to 'pseudohap'style with the script below:
+
+##Upon completing the assembly which resulted in fasta file was produced to 'pseudohap'style with the script below:
 
 ```
 #!/bin/bash -e
