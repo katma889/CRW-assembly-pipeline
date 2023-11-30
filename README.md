@@ -164,10 +164,10 @@ module load QUAST
 
 quast.py -t 10 --eukaryote --large --conserved-genes-finding --k-mer-stats \
 assembly.fasta \
--o quastqless 
+-o quast 
 
 ```
-By running the above script it yielded a `Quast` folder wwhich yielded a main file called 'report.txt'.
+By running the above script it yielded a `quast` folder wwhich yielded a main file called 'report.txt'.
 The above mentioned 'report.txt' yielded us  the Complete BUSCO and partial BUSCO percentage and also the number of contigs along with other assembly statistics.
 Then we used `Purgehaplotigs` to remove the haplotigs from our assembly. It helps us to to identify and reassign the duplicate contigs to improve our assembly. The script that we ran is given below;
 
@@ -227,18 +227,16 @@ This yielded us the file called `curated.fasta` which we further ran quast on it
 #SBATCH --mail-user=katma889@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
-export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
+export PATH="/nesi/nobackup/uoo02772/path to/bin/miniconda3/bin:$PATH"
 
 ragtag.py scaffold curated.haplotigs.fasta curated.fasta
 
 ```
 By running above script we got `ragtag.scaffold.fasta` as our main output and we can check the stats file ( for example ragtag.scaffold.stats) to see  the number of scaffold it removed. Our result is given below;
 
-```
-placed_sequences        placed_bp	unplaced_sequences	unplaced_bp     gap_bp  gap_sequences
-15186   629971398	36204   511046512	377200  3772
-```
-We further ran quast in the output file from ragtag that is `ragtag.scaffold.fasta` and it further reduced to number of contigs to 47618 with the complete BUSCO percent and partial BUSCO percent to 90.10 and 5.94 respectively.
+
+We further ran 'Quast' in the output file from ragtag that is `ragtag.scaffold.fasta` and it further reduced to number of contigs.
+
 Then we used `lrscaff` to further scaffold the assembly from ragtag using long reads that is `crw_ont_nanolyse_porechop_nanofilt.fasta` in our case. The script for `lrscaff` is given below;
 
 `Script for LRScaff`
@@ -288,7 +286,7 @@ java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.1
 
 ```
 
-We checked the output from the `lrscaff` from quast and `scaffolds5_scaffolds` resulted in the reduction in the number of contigs to 26788 with a complete BUSCO percent of 94.72 and partial BUSCO 2.64 percent respectively. 
+We checked the output from the `lrscaff` from quast and `scaffolds5_scaffolds` resulted in the further reduction in the number of contigs.
 
 We further scaffold our genome usimng long DNA sequences from ONT `crw_ont_nanolyse_porechop_nanofilt.fasta` using `RAILS v1.5.1` and `Cobbler v0.6.1` Here `RAIlS` is known as all-in -one scaffolder and gap-filler whereas Cobbler is tool that patch gaps automatically. The script used for this is given below;
 
@@ -320,51 +318,14 @@ sh runRAILSminimapSTREAM.sh scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.f
 /scale_wlg_persistent/filesets/opt_nesi/CS400_centos7_bdw/SAMtools/1.13-GCC-9.2.0/bin/samtools 10
 
 ```
-By running the script given above first we will get the output of cobbler as `crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_gapsFill.fa` in my case which was further used by `RAILS` to get the final output as `crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.scaffolds.fa` at the end. The summary of my RAILS log file is given below;
-
-```
-/RAILS Summary ---------------
-Number of merges induced : 47
-Average closed gap length (bp) : 2916.23
-Closed gap length st.dev +/- : 6705.50
-Total bases added : 137063
-Largest gap resolved (bp) : 38027
-Shortest gap resolved (bp) : 6
----------------------------------------------
+By running the script given above first we will get the output of cobbler as `crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_gapsFill.fa` in my case which was further used by `RAILS` to get the final output as `crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.scaffolds.fa` at the end. 
 *0 bp gaps are not counted towards the average
 crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.log 
 
 ```
-We then ran `Quast` for the output file from the rails. The `QUAST` report is given below;
+We then ran `Quast` for the output file from the rails to evaluate the assembly quality parameters.
 
-```
-Assembly                    crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.scaffolds
-# contigs (>= 0 bp)         26741                                                                               
-# contigs (>= 1000 bp)      23273                                                                               
-# contigs (>= 5000 bp)      15510                                                                               
-# contigs (>= 10000 bp)     13401                                                                               
-# contigs (>= 25000 bp)     10776                                                                               
-# contigs (>= 50000 bp)     8265                                                                                
-Total length (>= 0 bp)      1507291159                                                                          
-Total length (>= 1000 bp)   1504938917                                                                          
-Total length (>= 5000 bp)   1486560638                                                                          
-Total length (>= 10000 bp)  1471422085                                                                          
-Total length (>= 25000 bp)  1427853847                                                                          
-Total length (>= 50000 bp)  1335778686                                                                          
-# contigs                   17613                                                                               
-Largest contig              4214430                                                                             
-Total length                1494738492                                                                          
-GC (%)                      31.82                                                                               
-N50                         178346                                                                              
-N75                         98144                                                                               
-L50                         2465                                                                                
-L75                         5281                                                                                
-# N's per 100 kbp           8276.39                                                                             
-Complete BUSCO (%)          94.06                                                                               
-Partial BUSCO (%)           2.97
-
-```
-Then we further used the LRScaff to further boost the contiguity of our assemly using ONT long filetered reads.The script for `LRScaff` is given below;
+Then we further used the LRScaff to further boost the contiguity of our assemly using MinION long filetered reads.The script for `LRScaff` is given below;
 
 `script for LRScaff`
 
@@ -391,7 +352,7 @@ export PATH=/nesi/nobackup/uoo02752/bin/LR_Gapcloser/src/:$PATH
 sh LR_Gapcloser.sh -i crw.scaffolds.fasta -l crw_ont_nanolyse_porechop_nanofilt.fasta -s n -t 16 -r 10
 
 ```
-By running above script we got iteration -1 to iteration-10 folders with the common filename `gapclosed.fasta` in each of them. Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) to 3002.56 from 8276.39 using `crw_ont_nanolyse_porechop_nanofilt.fasta` for gap filling and increased the partial BUSCO to 3.30 from 2.97 while complete busco and number of contigs the same as previous.
+By running above script we got iteration -1 to iteration-10 folders with the common filename `gapclosed.fasta` in each of them. Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) in our case using `crw_ont_nanolyse_porechop_nanofilt.fasta` for gap filling.
 
 We further scaffold the output `gapclosed.fasta` by our supernova assembly from 10X `scaffold crw.10x.all.pseudo.fasta` from ragtag. 
 
@@ -600,7 +561,7 @@ This gave us the result in `SAM` file which is then converted to `BAM` which is 
 export PATH=/nesi/nobackup/uoo02752/nematode/bin/rascaf:$PATH
 
 #rascaf -b ../crw_mRNA_alignment_sorted.bam \
-#        -f ../../output.arbitr.scaffolds_c4_m50-10000_k100_r0.05_e30000_z1000_l2_a0.9.scaffolds.fa \
+#     -f ../../output.arbitr.scaffolds_c4_m50-10000_k100_r0.05_e30000_z1000_l2_a0.9.scaffolds.fa \
 #        -o crw_mRNA_scaffold
 
 rascaf-join -r crw_mRNA_scaffold.out -o crw_mRNA_scaffold
@@ -608,19 +569,6 @@ rascaf-join -r crw_mRNA_scaffold.out -o crw_mRNA_scaffold
 
 ```
 We ran 'Quast' and then `Busco` version 5.2.2 using insect dataset to evaluate the assembly quality.
-
-```
-BUSCO version 5.2.2 
-# The lineage dataset is: insecta_odb10 (Creation date: 2020-09-10, number of genomes: 75, number of BUSCOs: 1367)
-# Summarized benchmarking in BUSCO notation for file /scale_wlg_nobackup/filesets/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/arks/rascaf/alignment/rascaf/crw_mRNA_scaffold.fa
-# BUSCO was run in mode: genome
-# Gene predictor used: metaeuk
-
-                     
-Dependencies and versions:
-        hmmsearch: 3.3
-        metaeuk: GITDIR-NOTFOUND
-```
 
 After finalising our raw assembly the next step is to re-ran `purge-haplotigs` using the scripts beow;
 
@@ -687,7 +635,7 @@ ragtag.py scaffold curated.haplotigs.fasta curated.fasta
 
 By running script above we got the oupur folder `ragtag_output` with the assembly `ragtag.scaffold.fasta` which we used for repeating the ragtag assembly for better output named as `ragtag2` where the output above is ussed as input for ragtag 2.
 
-`Script for "ragtag2`
+`Script for 'ragtag2`
 
 ```
 
