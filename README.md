@@ -308,7 +308,6 @@ We further scaffold our genome usimng long DNA sequences from ONT `crw_ont_nanol
 #SBATCH --mail-user=katma889@student.otago.ac.nz
 #SBATCH --hint=nomultithread
 
-
 module load Perl/5.30.1-GCC-9.2.0
 module load minimap2
 module load SAMtools/1.13-GCC-9.2.0
@@ -318,11 +317,11 @@ sh runRAILSminimapSTREAM.sh scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.f
 /scale_wlg_persistent/filesets/opt_nesi/CS400_centos7_bdw/SAMtools/1.13-GCC-9.2.0/bin/samtools 10
 
 ```
+
 By running the script given above first we will get the output of cobbler as `crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_gapsFill.fa` in my case which was further used by `RAILS` to get the final output as `crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.scaffolds.fa` at the end. 
 *0 bp gaps are not counted towards the average
 crw_ont_nanolyse_porechop_nanofilt.fasta_vs_scaffolds.fasta_250_0.80_rails.log 
 
-```
 We then ran `Quast` for the output file from the rails to evaluate the assembly quality parameters.
 
 Then we further used the LRScaff to further boost the contiguity of our assemly using MinION long filetered reads.The script for `LRScaff` is given below;
@@ -330,7 +329,6 @@ Then we further used the LRScaff to further boost the contiguity of our assemly 
 `script for LRScaff`
 
 ```
-
 #!/bin/bash -e
 
 #SBATCH --nodes 1
@@ -351,7 +349,6 @@ module load BWA/0.7.17-gimkl-2017a
 export PATH=/nesi/nobackup/uoo02752/bin/LR_Gapcloser/src/:$PATH
 
 sh LR_Gapcloser.sh -i crw.scaffolds.fasta -l crw_ont_nanolyse_porechop_nanofilt.fasta -s n -t 16 -r 10
-
 ```
 
 By running above script we got iteration -1 to iteration-10 folders with the common filename `gapclosed.fasta` in each of them. Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) in our case using `crw_ont_nanolyse_porechop_nanofilt.fasta` for gap filling.
