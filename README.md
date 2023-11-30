@@ -560,14 +560,13 @@ This gave us the result in `SAM` file which is then converted to `BAM` which is 
 
 export PATH=/nesi/nobackup/uoo02752/nematode/bin/rascaf:$PATH
 
-#rascaf -b ../crw_mRNA_alignment_sorted.bam \
-#     -f ../../output.arbitr.scaffolds_c4_m50-10000_k100_r0.05_e30000_z1000_l2_a0.9.scaffolds.fa \
-#        -o crw_mRNA_scaffold
+rascaf -b ../crw_mRNA_alignment_sorted.bam \
+    -f ../../output.arbitr.scaffolds_c4_m50-10000_k100_r0.05_e30000_z1000_l2_a0.9.scaffolds.fa \
+  -o crw_mRNA_scaffold
 
 rascaf-join -r crw_mRNA_scaffold.out -o crw_mRNA_scaffold
-      
 
-```
+      
 We ran 'Quast' and then `Busco` version 5.2.2 using insect dataset to evaluate the assembly quality.
 
 After finalising our raw assembly the next step is to re-ran `purge-haplotigs` using the scripts beow;
@@ -658,6 +657,7 @@ export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 
 ragtag.py scaffold curated.haplotigs.fasta ragtag.scaffold.renamed.fasta
 
+
 ```
 
 The output assembly obtained by running above script is used as our final assembly `ragtag.scaffold.fasta` was renamed and changes in the header as `CRW_assembly.fasta` and ran `BUSCO` on it before processing by `blobtools`. `Blobtools`are a modular command-line solution for removing contaminats from associated microorganisms  and other non target organisms by better visualisation, quality control and taxonomic partitioning of genome datasets. This will aid in improving our assemblies by screening of the final assemblies produced from `ragtag2` for potential contaminants.
@@ -665,6 +665,7 @@ The output assembly obtained by running above script is used as our final assemb
 `Script for BUSCO`
 
 ```
+
 #!/bin/bash -e
 #SBATCH --nodes 1
 #SBATCH --cpus-per-task 1
@@ -684,6 +685,8 @@ module load BUSCO/5.2.2-gimkl-2020a
 cp -r $AUGUSTUS_CONFIG_PATH /nesi/nobackup/uoo02772/bin/MyAugustusConfig
 export AUGUSTUS_CONFIG_PATH=/nesi/nobackup/uoo02772/bin/MyAugustusConfig
 busco --in ../CRW_assembly.fasta  --out Busco -c 16 -m genome -l insecta_odb10
+
+```
 
 
 1. `BlobTools`
