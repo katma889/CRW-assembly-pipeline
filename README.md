@@ -330,6 +330,7 @@ Then we further used the LRScaff to further boost the contiguity of our assemly 
 `script for LRScaff`
 
 ```
+
 #!/bin/bash -e
 
 #SBATCH --nodes 1
@@ -352,6 +353,7 @@ export PATH=/nesi/nobackup/uoo02752/bin/LR_Gapcloser/src/:$PATH
 sh LR_Gapcloser.sh -i crw.scaffolds.fasta -l crw_ont_nanolyse_porechop_nanofilt.fasta -s n -t 16 -r 10
 
 ```
+
 By running above script we got iteration -1 to iteration-10 folders with the common filename `gapclosed.fasta` in each of them. Then we ran quast (iteration10) to check the quality of the assembly, LRScaff reduced gaps (N's per 100 kbp) in our case using `crw_ont_nanolyse_porechop_nanofilt.fasta` for gap filling.
 
 We further scaffold the output `gapclosed.fasta` by our supernova assembly from 10X `scaffold crw.10x.all.pseudo.fasta` from ragtag. 
@@ -468,6 +470,7 @@ export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/guppp
 arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
 
 ```
+
 Then we ran `arks`  version 1.1.0 to scaffold the genome assemblies produced by arbirr using our 10X Chromium Genomics reads. 
 
 `Scripts for arks`
