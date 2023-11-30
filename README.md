@@ -14,7 +14,7 @@ Raw data (fast5) from oxford nanopore MinION was basecalled using Guppy version 
 #SBATCH --account=uoo02772              #my project number in nesi
 #SBATCH --time=10:00:00                 #wall time
 #SBATCH --partition=gpu                 #guppy runs faster in gpu partition in nesi, than other partition
-#SBATCH --gres=gpu:1                    #some configuration for gpu partition, that i don't understand, suggested by nesi support
+#SBATCH --gres=gpu:1                    #some configuration for gpu partition
 #SBATCH --mem=6G                                # memory 6gb
 #SBATCH --ntasks=4                              #ntask set to 4
 #SBATCH --cpus-per-task=1               #cpu per task set to 1
