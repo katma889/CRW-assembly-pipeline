@@ -53,4 +53,4 @@ supernova mkoutput \
         --asmdir=path/to/working-directory-of-supernova/crw_10xSN/outs/assembly \      # this is a path to the output directory `assembly` created by supernova
         --outprefix=./crw_10xSN
 ```
-## the script above produced a assembly named 'crw_10xSN.fasta.gz' which was quality checked using 'Quast' as described earlier 
+##the script above produced a assembly named 'crw_10xSN.fasta.gz' which was quality checked using 'Quast' as described earlier 
