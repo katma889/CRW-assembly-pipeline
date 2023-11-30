@@ -283,7 +283,6 @@ minimap2 -t 10 ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds.fasta crw
 export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
 
 java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds.fasta --alignedFile ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/aln.mm -t mm -p 10 --output ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5
-
 ```
 
 We checked the output from the `lrscaff` from quast and `scaffolds5_scaffolds` resulted in the further reduction in the number of contigs.
@@ -376,7 +375,6 @@ We further scaffold the output `gapclosed.fasta` by our supernova assembly from 
 export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 
 ragtag.py scaffold crw.10x.all.pseudo.fasta gapclosed.fasta
-
 ```
 By running above script we got `ragtag.scaffold.fasta` as output file which we further used for scafollding agian using `ragtag`. We renamed this output as `assembly.fasta` and also changed the sequence header to make it compatible to use in scaffolding using ragtag. The script for ragtag for second times is same except using `assembly.fasta` instead of `gapclosed.fasta`. By running the ragtag script this time we used `ragtag.scaffold.fasta` 
 
@@ -407,7 +405,6 @@ export PATH=/nesi/project/uoo02752/bin/longranger-2.2.2:$PATH
 longranger align --id=CRW \
 --fastqs=/nesi/nobackup/uoo02772/crw/10x/1.raw.hiseq.novaseq \
 --reference=/nesi/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/refdata-ragtag.scaffold
-
 ```
 Then we ran ARBitR on the aligned scaffold fasta file using `possorted_bam.bam`.
 
