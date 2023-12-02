@@ -114,7 +114,7 @@ porechop -i ../crw_nanopore_filtered.fastq.gz -o crw_ont_nanolyse_porechop.fastq
 ```
 Among different assemblers that were tried for assefor Nanopore Long reads,`FLye` gave the best assembly, Therefore We used `FLye`2.9 version to assemble the long read data from Oxford Minion. The script for `flye` assembly algorithm is given below;
 
-Script for Flye 
+`Script for Flye` 
 
 ```
 #!/bin/bash -e
@@ -192,21 +192,23 @@ Then we used `Purgehaplotigs` to remove the haplotigs from our assembly. It help
 module load SAMtools/1.12-GCC-9.2.0
 module load minimap2/2.20-GCC-9.2.0
 module load BEDTools/2.29.2-GCC-9.2.0
-
-#minimap2 -t 10 -ax map-ont assembly.fasta crw_ont_nanolyse_porechop_nanofilt.fastq.gz \
-#--secondary=no | samtools sort -m 5G -o aligned.bam -T tmp.ali
-
 export PATH="/nesi/nobackup/uoo02772/bin/miniconda3/bin:$PATH"
-#purge_haplotigs hist -b aligned.bam -g assembly.fasta -t 10
 
-#purge_haplotigs cov -i aligned.bam.gencov -l 0 -m 20 -h 199 -o coverage_stats.csv
-
+#step 1
+minimap2 -t 10 -ax map-ont assembly.fasta crw_ont_nanolyse_porechop_nanofilt.fastq.gz \
+--secondary=no | samtools sort -m 5G -o aligned.bam -T tmp.ali
+#step 2
+purge_haplotigs hist -b aligned.bam -g assembly.fasta -t 10
+#step 3
+purge_haplotigs cov -i aligned.bam.gencov -l 0 -m 20 -h 199 -o coverage_stats.csv
+#step 4
 purge_haplotigs purge -g assembly.fasta -c coverage_stats.csv -b aligned.bam
-
-#awk '{print $1",s,"}' gapclosed.fasta.pilon3.fasta.fai > cov_stat.csv
-#purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
-
+#step 5
+awk '{print $1",s,"}' gapclosed.fasta.pilon3.fasta.fai > cov_stat.csv
+#step 6
+purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
 ```
+
 This yielded us the file called `curated.fasta` which we further ran quast on it. This `purge haplotigs` bring down the contigs number to -51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the `RagTag` algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for `RAgTag` is given below;
 
 `Script for RagTag`
@@ -259,30 +261,12 @@ Then we used `lrscaff` to further scaffold the assembly from ragtag using long r
 
 module load minimap2
 
+#step 1
 minimap2 -t 10 ragtag.scaffold.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./aln.mm
+#step 2
 export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
-
 java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ragtag.scaffold.fasta --alignedFile aln.mm -t mm -p 10 --output ./scaffolds1
 
-minimap2 -t 10 ./scaffolds1/scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./scaffolds1/aln.mm
-export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
-
-java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ./scaffolds1/scaffolds.fasta --alignedFile ./scaffolds1/aln.mm -t mm -p 10 --output ./scaffolds1/scaffolds2
-
-minimap2 -t 10 ./scaffolds1/scaffolds2/scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./scaffolds1/scaffolds2/aln.mm
-export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
-
-java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ./scaffolds1/scaffolds2/scaffolds.fasta --alignedFile ./scaffolds1/scaffolds2/aln.mm -t mm -p 10 --output ./scaffolds1/scaffolds2/scaffolds3
-
-minimap2 -t 10 ./scaffolds1/scaffolds2/scaffolds3/scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./scaffolds1/scaffolds2/scaffolds3/aln.mm
-export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
-
-java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ./scaffolds1/scaffolds2/scaffolds3/scaffolds.fasta --alignedFile ./scaffolds1/scaffolds2/scaffolds3/aln.mm -t mm -p 10 --output ./scaffolds1/scaffolds2/scaffolds3/scaffolds4
-
-minimap2 -t 10 ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds.fasta crw_ont_nanolyse_porechop_nanofilt.fasta > ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/aln.mm
-export PATH="/nesi/nobackup/uoo02752/bin/lrscaf/target/:$PATH"
-
-java -Xms80g -Xmx80g -jar /nesi/nobackup/uoo02752/bin/lrscaf/target/LRScaf-1.1.11.jar --contig ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds.fasta --alignedFile ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/aln.mm -t mm -p 10 --output ./scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5
 ```
 
 We checked the output from the `lrscaff` from quast and `scaffolds5_scaffolds` resulted in the further reduction in the number of contigs.
@@ -376,6 +360,7 @@ export PATH="/nesi/nobackup/uoo02752/nematode/bin/miniconda3/bin:$PATH"
 
 ragtag.py scaffold crw.10x.all.pseudo.fasta gapclosed.fasta
 ```
+
 By running above script we got `ragtag.scaffold.fasta` as output file which we further used for scafollding agian using `ragtag`. We renamed this output as `assembly.fasta` and also changed the sequence header to make it compatible to use in scaffolding using ragtag. The script for ragtag for second times is same except using `assembly.fasta` instead of `gapclosed.fasta`. By running the ragtag script this time we used `ragtag.scaffold.fasta` 
 
 We further used `ARBitR` for further merging and scaffolding our current genome assembly from ragtag. As it takes alignment file in the bam/sam format (for example possorted_bam.bam in our case)  with 10X Chromium barcodes when provided with genome fasta file used for mapping, it will sort and merge the provided contigs into scaffolds. Therefore, first we created a reference data `ragtag.scaffold.fasta` and alignment in the folder id CRW using `longranger` to be used by the `ARBitR`. 
@@ -404,8 +389,9 @@ export PATH=/nesi/project/uoo02752/bin/longranger-2.2.2:$PATH
 
 longranger align --id=CRW \
 --fastqs=/nesi/nobackup/uoo02772/crw/10x/1.raw.hiseq.novaseq \
---reference=/nesi/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/refdata-ragtag.scaffold
+--reference=path/to/refdata-ragtag.scaffold
 ```
+
 Then we ran ARBitR on the aligned scaffold fasta file using `possorted_bam.bam`.
 
 `Script for ARBitR`
@@ -458,47 +444,13 @@ module load BWA/0.7.17-GCC-9.2.0
 module load SAMtools/1.13-GCC-9.2.0
 module load BEDTools/2.29.2-GCC-9.2.0
 module load LINKS/1.8.7-GCC-9.2.0
-export PATH=/nesi/nobackup/uoo02752/CRW/CRW_nanopore/0.all_fast5/gupppy.5/pycoqc/nanolyse/porechop/nanoqc/flye/crw_flye/purgehaplotigs/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/lrgapcloser/Output/rails.cobler/ragtag/ragtag_output/arbitr/arbitr.default/arbitr.2/arcs.links/arks-1.0.4/Examples:$PATH
-export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/gupppy.5/pycoqc/nanolyse/porechop/nanoqc/flye/M.neg_flye/purgehaplotigs/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/lrgapcloser/Output/rails.cobler/ragtag/ragtag_output/arbitr/arbitr.default/arbitr.2/arcs.links/arks-1.0.4/Arks:$PATH
+export PATH=/path/to/arks-1.0.4/Examples:$PATH
+export PATH=/path/to/arks-1.0.4/Arks:$PATH
 
 arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
 
 ```
 
-Then we ran `arks`  version 1.1.0 to scaffold the genome assemblies produced by arbirr using our 10X Chromium Genomics reads. 
-
-`Scripts for arks`
-
-```
-(base) [katma889@mahuika01 arks]$ less arks.sl
-
-#!/bin/bash -e
-
-#SBATCH --nodes 1
-#SBATCH --cpus-per-task 1
-#SBATCH --ntasks 16
-##SBATCH --qos=debug
-#SBATCH --job-name arks.crw
-#SBATCH --mem=50G
-#SBATCH --time=72:00:00
-##SBATCH --time=00:15:00
-#SBATCH --account=uoo02772
-#SBATCH --output=%x_%j.out
-#SBATCH --error=%x_%j.err
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=katma889@student.otago.ac.nz
-#SBATCH --hint=nomultithread
-
-module load BWA/0.7.17-GCC-9.2.0
-module load SAMtools/1.13-GCC-9.2.0
-module load BEDTools/2.29.2-GCC-9.2.0
-module load LINKS/1.8.7-GCC-9.2.0
-export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/gupppy.5/pycoqc/nanolyse/porechop/nanoqc/flye/M.neg_flye/purgehaplotigs/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/lrgapcloser/Output/rails.cobler/ragtag/ragtag_output/arbitr/arbitr.default/arbitr.2/arcs.links/arks-1.0.4/Examples:$PATH
-export PATH=/nesi/nobackup/uoo02752/nematode/nematode_nanopore/0.all_fast5/gupppy.5/pycoqc/nanolyse/porechop/nanoqc/flye/M.neg_flye/purgehaplotigs/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/lrgapcloser/Output/rails.cobler/ragtag/ragtag_output/arbitr/arbitr.default/arbitr.2/arcs.links/arks-1.0.4/Arks:$PATH
-
-arks-make arks draft=output.arbitr.scaffolds reads=barcoded threads=16
-
-```
 Then we used `Rascaf`to improve the assembly from above using our PE RNA-seq data. This will enable us to imrove our long-range contiguity and order information from intron-spanning RNA-seq read pairs to improve our draft assembly particularly in gene regions. Therefore we imorted merged fq files for Our PE mRNA-seq reads (`merge.R1.fq` and `merge.R2.fq` . Before running the `Rascaf` we first need to align our RNA-seq reads mapping into our genome using `Hisat2`. 
 
 `Script for Hisat2`
@@ -562,7 +514,7 @@ rascaf -b ../crw_mRNA_alignment_sorted.bam \
   -o crw_mRNA_scaffold
 
 rascaf-join -r crw_mRNA_scaffold.out -o crw_mRNA_scaffold
-
+```
       
 We ran 'Quast' and then `Busco` version 5.2.2 using insect dataset to evaluate the assembly quality.
 
@@ -590,17 +542,22 @@ module load SAMtools/1.13-GCC-9.2.0
 module load minimap2/2.20-GCC-9.2.0
 module load BEDTools/2.29.2-GCC-9.2.0
 
-#minimap2 -t 10 -ax map-ont crw_mRNA_scaffold.fa crw_ont_nanolyse_porechop_nanofilt.fasta \
-#--secondary=no | samtools sort -m 5G -o aligned.bam -T tmp.ali
+#step 1
+minimap2 -t 10 -ax map-ont crw_mRNA_scaffold.fa crw_ont_nanolyse_porechop_nanofilt.fasta \
+--secondary=no | samtools sort -m 5G -o aligned.bam -T tmp.ali
 
+#step 2
 export PATH="/nesi/nobackup/uoo02752/.conda/envs/purge_haplotigs_env/bin:$PATH"
-#purge_haplotigs hist -b aligned.bam -g crw_mRNA_scaffold.fa -t 10
+purge_haplotigs hist -b aligned.bam -g crw_mRNA_scaffold.fa -t 10
 
-#purge_haplotigs cov -i aligned.bam.gencov -l 0 -m 15 -h 190 -o coverage_stats.csv
+#step 3
+purge_haplotigs cov -i aligned.bam.gencov -l 0 -m 15 -h 190 -o coverage_stats.csv
 
+#step 4
 purge_haplotigs purge -g crw_mRNA_scaffold.fa -c coverage_stats.csv -b aligned.bam
 
-#purge_haplotigs clip -p curated.fasta -h curated.haplotigs.fasta -t 10
+#step 5
+purge_haplotigs clip -p curated.fasta -h curated.haplotigs.fasta -t 10
 
 ```
 Then we further use the output of above script `curated.haplotigs.fasta` to scaffold our final genome `curated.fasta` using `ragtag`.
@@ -686,9 +643,9 @@ busco --in ../CRW_assembly.fasta  --out Busco -c 16 -m genome -l insecta_odb10
 ```
 
 
-1. `BlobTools`
+## 1. BlobTools
 we intalled the 'BlobTools2' and its dependencies and then fetch the 'nt database' and 'UniProt database'  and formattted it as per the 'Blobtools' requiremnts. For formatting the UniProt databases we downloaded the 'NCBI taxdump' and then uncompressed in a sister directory in a few steps. We also have to fetch the BUSCO lineages that we plan to use such as eukaryota or insecta. For this we followed [this](https://blobtoolkit.genomehubs.org/install/). The steps of actions we follwed are given below;
-## 1. BlobTools2
+
 ### 1.1 Coverage
 
 By mapping the ont long reads to our final assembly we got coverage data as `bam file`.
@@ -746,7 +703,7 @@ Following the `Blobtools` manual we blasted our assembly against `nt` database
 #SBATCH --hint=nomultithread
 
 module load BLAST/2.12.0-GCC-9.2.0
-export BLASTDB='/nesi/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/arks/rascaf/alignment/rascaf/purge_haplotigs/ragtag/ragtag_output/ragtag2/ragtag_output/blobtools/blobtools2/nt'
+export BLASTDB='/path/to/nt'
 
 blastn -db nt \
         -query ./CRW_assembly.fasta
@@ -787,7 +744,7 @@ module load DIAMOND/2.0.6-GCC-9.2.0
 
 diamond blastx \
 --query xag \
---db /nesi/nobackup/uoo02772/crw/2.nanopore/1.CRW_nanopore_rawdata/guppy.5/nanolyse/porechop/nanoqc/nanofilt/flye/Flye/purgehaplotigs/ragtag_output/lrscaff/scaffolds1/scaffolds2/scaffolds3/scaffolds4/scaffolds5/rails.cobbler/lrgapcloser/Output/sn.10x.ragtag/ragtag_output/ragtag.2/ragtag_output/arbitr/arks/rascaf/alignment/rascaf/purge_haplotigs/ragtag/ragtag_output/ragtag2/ragtag_output/blobtools/UniProt/reference_proteomes.dmnd \
+--db /path/to/UniProt/reference_proteomes.dmnd \
 --outfmt 6 qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore \
 --sensitive \
 --max-target-seqs 1 \
@@ -797,7 +754,7 @@ diamond blastx \
 --out xag.blastx.out
 
 ```
-## 1.4 Database
+### 1.4 Database
 Blobdatabase folder was created and then we added the results from blastn, `diamond.blastx` and coverage information in that folder. We download `taxdump` dataset as described [here](https://blobtoolkit.genomehubs.org/install/#databases) and then created a textfile named `CRW_assembly.yaml` which is included in the script below
 
 
@@ -815,7 +772,7 @@ taxon:
  Script used to create, add and filter database
  
  
- ### Create the database
+ #### Create the database
  ```
 /path/to/blobtools create \
        --fasta ../CRW_assembly.fasta \
@@ -825,7 +782,7 @@ taxon:
        CRW_Assembly
 ```
 
-### Add hits and coverage info to the database
+#### Add hits and coverage info to the database
 ```
 /path/to/blobtools add \
        --hits ../blastn/blastn.out \
@@ -835,7 +792,7 @@ taxon:
        --taxdump path/to/taxdump/ \
        CRW_Assembly
 ```
-### Filter the assembly
+#### Filter the assembly
 ```
 /path/to/blobtools filter \
 --param bestsumorder_superkingdom--Keys=Bacteria \
@@ -848,7 +805,7 @@ CRW_Assembly
 
 ```
 
-### Extract the shorter scaffolds and scaffolds with low coverage which were earlier discarded by blobtools filter 
+#### Extract the shorter scaffolds and scaffolds with low coverage which were earlier discarded by blobtools filter 
 
 ```
 /path/to/blobtools/ filter \
