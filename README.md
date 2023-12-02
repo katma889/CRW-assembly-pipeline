@@ -167,7 +167,7 @@ assembly.fasta \
 -o quast 
 
 ```
-By running the above script it yielded a `quast` folder wwhich yielded a main file called 'report.txt'.
+By running the above script it yielded a `quast` folder which yielded a main file called 'report.txt'.
 The above mentioned 'report.txt' yielded us  the Complete BUSCO and partial BUSCO percentage and also the number of contigs along with other assembly statistics.
 Then we used `Purgehaplotigs` to remove the haplotigs from our assembly. It helps us to to identify and reassign the duplicate contigs to improve our assembly. The script that we ran is given below;
 
@@ -209,7 +209,7 @@ awk '{print $1",s,"}' gapclosed.fasta.pilon3.fasta.fai > cov_stat.csv
 purge_haplotigs purge -g gapclosed.fasta.pilon3.fasta -c cov_stat.csv -b aligned.bam
 ```
 
-This yielded us the file called `curated.fasta` which we further ran quast on it. This `purge haplotigs` bring down the contigs number to -51390 from 82815. However, the complete BUSCO percent was sligthly reduded to 90.10 and little increase on partial BUSCO to 6.27. Therefore we further used the `RagTag` algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for `RAgTag` is given below;
+This yielded us the file called `curated.fasta` which we further ran quast on it. This `purge haplotigs` helped to reduce the number of contigs with slight decrease in complete BUSCO percent. Therefore we further used the `RagTag` algorithm  a toolset for automating assembly scaffolding and patching our long read assembly. The script for `RAgTag` is given below;
 
 `Script for RagTag`
 
