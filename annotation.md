@@ -6,7 +6,7 @@ Workflow:
 ## A. Repeat library preparation
 1. [Repeatmoduler](https://github.com/upendrabhattarai/Earwig_genome_project/blob/main/Denovo_repeat_library/Repeatmoduler.md)
 2. [LTRharvest & LTRdigest](https://github.com/upendrabhattarai/Earwig_genome_project/blob/main/Denovo_repeat_library/LTRharvest%26LTRdigest.md)
-3. TransposonPSI
+3. [TransposonPSI
 4. Sine database
 5. Concatenating, filtering, and classifying repeats
 6. RepeatClassifier
