@@ -319,7 +319,6 @@ Then we further used the LRScaff to further boost the contiguity of our assemly 
 #SBATCH --ntasks 16
 #SBATCH --job-name lr-gapEW
 #SBATCH --mem=40G
-##SBATCH --time=00:15:00
 #SBATCH --time=50:00:00
 #SBATCH --account=uoo02752
 #SBATCH --output=%x_%j.out
@@ -428,7 +427,6 @@ We further ran arks on the output from the above script.
 #SBATCH --nodes 1
 #SBATCH --cpus-per-task 1
 #SBATCH --ntasks 16
-##SBATCH --qos=debug
 #SBATCH --job-name arks.crw
 #SBATCH --mem=50G
 #SBATCH --time=72:00:00
@@ -464,8 +462,6 @@ Then we used `Rascaf`to improve the assembly from above using our PE RNA-seq dat
 #SBATCH --cpus-per-task 1
 #SBATCH --ntasks 10
 #SBATCH --mem=40G
-##SBATCH --qos=debug
-##SBATCH --time=00:15:00
 #SBATCH --time=20:00:00
 #SBATCH --output=%x.%j.out
 #SBATCH --error=%x.%j.err
@@ -498,8 +494,6 @@ This gave us the result in `SAM` file which is then converted to `BAM` which is 
 #SBATCH --cpus-per-task 1
 #SBATCH --ntasks 10
 #SBATCH --mem=5G
-##SBATCH --qos=debug
-##SBATCH --time=00:15:00
 #SBATCH --time=08:00:00
 #SBATCH --output=%x.%j.out
 #SBATCH --error=%x.%j.err
@@ -658,10 +652,8 @@ By mapping the ont long reads to our final assembly we got coverage data as `bam
 #SBATCH --nodes 1
 #SBATCH --cpus-per-task 1
 #SBATCH --ntasks 20
-##SBATCH --qos=debug
 #SBATCH --job-name coverage.crw
 #SBATCH --mem=80G
-##SBATCH --time=00:15:00
 #SBATCH --time=08:00:00
 #SBATCH --account=uoo02772
 #SBATCH --output=%x_%j.out
@@ -690,10 +682,8 @@ Following the `Blobtools` manual we blasted our assembly against `nt` database
 #SBATCH --nodes 1
 #SBATCH --cpus-per-task 1
 #SBATCH --ntasks 36
-##SBATCH --qos=debug
 #SBATCH --job-name bl.crw.xaa
 #SBATCH --mem=20G
-##SBATCH --time=00:15:00
 #SBATCH --time=3-00:00:00
 #SBATCH --account=uoo02772
 #SBATCH --output=%x_%j.out
@@ -727,10 +717,8 @@ As mentioned earlier we downloaded the uniprot database and formatted them follo
 #SBATCH --nodes 1
 #SBATCH --cpus-per-task 1
 #SBATCH --ntasks 10
-##SBATCH --qos=debug
 #SBATCH --job-name dia.xag
 #SBATCH --mem=20G
-##SBATCH --time=00:15:00
 #SBATCH --time=2-00:00:00
 #SBATCH --account=uoo02772
 #SBATCH --output=%x_%j.out
